@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/otpRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@color/colorBackground">
+
+    <!-- Заголовок -->
+    <TextView
+        android:id="@+id/otpTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Введите код из письма"
+        android:textAppearance="@style/TextAppearance.OpenFashion.H2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- OTP Code -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/otpInputLayout"
+        style="@style/Widget.OpenFashion.TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="6‑значный код"
+        app:layout_constraintTop_toBottomOf="@id/otpTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/otpEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>  <!-- только цифры -->
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Кнопка “Подтвердить код” -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/verifyOtpButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="Подтвердить код"
+        style="@style/Widget.OpenFashion.Button"
+        app:layout_constraintTop_toBottomOf="@id/otpInputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/otpProgress"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        style="?android:attr/progressBarStyleLarge"
+        android:visibility="gone"
+        android:indeterminateTint="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/verifyOtpButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <!-- Текст ошибки -->
+    <TextView
+        android:id="@+id/otpErrorText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorError"
+        android:visibility="gone"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
+        app:layout_constraintTop_toBottomOf="@id/otpProgress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

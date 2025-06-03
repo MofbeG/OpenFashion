@@ -20,12 +20,16 @@ import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
 
 /**
- * SplashFragment — доработанный загрузочный экран с анимацией и безопасными UI‑вызовами.
+ * SplashFragment — загрузочный экран с анимацией и проверкой:
+ * 1. сеть
+ * 2. сервер Supabase
+ * 3. загрузка начальных данных (категорий)
+ * 4. сессия (JWT + PIN или Onboarding)
  */
 public class SplashFragment extends Fragment {
 
-    private static final long LOGO_ANIM_DURATION = 600; // длительность анимации (мс)
-    private static final long NEXT_STEP_DELAY     = 300; // задержка между этапами (мс)
+    private static final long LOGO_ANIM_DURATION = 600; // мс
+    private static final long NEXT_STEP_DELAY     = 300; // мс
 
     private View splashLogo;
     private ProgressBar splashProgress;
@@ -33,7 +37,7 @@ public class SplashFragment extends Fragment {
     private Button actionButton;
 
     private SupabaseService supabaseService;
-    private String userId; // user_id из SharedPrefs
+    private SharedPrefHelper prefs;
 
     public SplashFragment() {
         super(R.layout.fragment_splash);
@@ -49,9 +53,9 @@ public class SplashFragment extends Fragment {
         actionButton   = view.findViewById(R.id.actionButton);
 
         supabaseService = new SupabaseService();
-        userId = SharedPrefHelper.getInstance(requireContext()).getUserId();
+        prefs           = SharedPrefHelper.getInstance(requireContext());
 
-        // Сразу скрываем всё, кроме логотипа
+        // Скрываем всё, кроме логотипа
         splashLogo.setVisibility(View.GONE);
         splashProgress.setVisibility(View.GONE);
         statusText.setVisibility(View.GONE);
@@ -60,20 +64,19 @@ public class SplashFragment extends Fragment {
         animateLogo();
     }
 
-    /** Анимация логотипа (scale + fadeIn) */
+    /** Анимация логотипа (масштаб + плавное появление) */
     private void animateLogo() {
         runOnUi(() -> splashLogo.setVisibility(View.VISIBLE));
 
         ScaleAnimation scaleAnim = new ScaleAnimation(
-                0.5f, 1.0f,
-                0.5f, 1.0f,
+                0.5f, 1f, 0.5f, 1f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
                 ScaleAnimation.RELATIVE_TO_SELF, 0.5f
         );
         scaleAnim.setDuration(LOGO_ANIM_DURATION);
         runOnUi(() -> splashLogo.startAnimation(scaleAnim));
 
-        AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+        AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
         fadeIn.setDuration(LOGO_ANIM_DURATION);
         runOnUi(() -> splashLogo.startAnimation(fadeIn));
 
@@ -81,7 +84,7 @@ public class SplashFragment extends Fragment {
                 .postDelayed(this::startInitialization, LOGO_ANIM_DURATION + NEXT_STEP_DELAY);
     }
 
-    /** Запуск этапов инициализации */
+    /** Этап 1: Проверка сети */
     private void startInitialization() {
         runOnUi(() -> {
             splashProgress.setVisibility(View.VISIBLE);
@@ -99,7 +102,7 @@ public class SplashFragment extends Fragment {
         }
     }
 
-    /** Проверка доступности Supabase */
+    /** Этап 2: Проверка доступности Supabase */
     private void checkServer() {
         runOnUi(() -> setStatus("Проверка сервера…"));
 
@@ -120,14 +123,13 @@ public class SplashFragment extends Fragment {
         });
     }
 
-    /** Загрузка категорий */
+    /** Этап 3: Загрузка категорий (или других стартовых данных) */
     private void loadCategories() {
-        runOnUi(() -> setStatus("Загрузка категорий…"));
+        runOnUi(() -> setStatus("Загрузка данных…"));
 
         supabaseService.getCategories(new SupabaseService.QueryCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
-                // Кэширование категории по желанию
                 new Handler(Looper.getMainLooper())
                         .postDelayed(SplashFragment.this::checkSession, NEXT_STEP_DELAY);
             }
@@ -135,49 +137,52 @@ public class SplashFragment extends Fragment {
             @Override
             public void onError(String errorMessage) {
                 runOnUi(() -> {
-                    setStatus("Ошибка загрузки категорий");
+                    setStatus("Ошибка загрузки данных");
                     showRetryButton();
                 });
             }
         });
     }
 
-    /** Проверка JWT и сессии */
+    /** Этап 4: Проверка сессии (JWT + PIN или Onboarding) */
     private void checkSession() {
         runOnUi(() -> setStatus("Проверка сессии…"));
 
-        String jwt = SharedPrefHelper.getInstance(requireContext()).getJwtToken();
-        if (jwt == null || jwt.isEmpty()) {
-            runOnUi(this::showLoginButton);
+        String jwt    = prefs.getJwtToken();
+        String userId = prefs.getUserId();
+        String pin    = prefs.getUserPin();
+
+        if (jwt == null || jwt.isEmpty() || userId == null || userId.isEmpty()) {
+            // Нет JWT/профиля → идём на Onboarding или сразу на Auth
+            runOnUi(() -> navigateToOnboarding());
         } else {
+            // Есть JWT, проверяем профиль, затем PIN
             supabaseService.setJwtToken(jwt);
-            if (userId == null || userId.isEmpty()) {
-                runOnUi(() -> needLogin("Требуется вход"));
-            } else {
-                supabaseService.getProfile(userId, new SupabaseService.QueryCallback() {
-                    @Override
-                    public void onSuccess(String jsonResponse) {
-                        if (jsonResponse.trim().equals("[]")) {
-                            runOnUi(() -> needLogin("Сессия истекла"));
+            supabaseService.getProfile(userId, new SupabaseService.QueryCallback() {
+                @Override
+                public void onSuccess(String jsonResponse) {
+                    // Если профиль пустой, считаем, что сессия истекла
+                    if (jsonResponse.trim().equals("[]")) {
+                        runOnUi(() -> navigateToAuthWithMessage("Сессия устарела"));
+                    } else {
+                        // Если PIN не установлен, сразу просим установить
+                        if (pin == null || pin.isEmpty()) {
+                            runOnUi(() -> navigateToPinEntry());
                         } else {
-                            new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                            NavHostFragment.findNavController(SplashFragment.this)
-                                                    .navigate(R.id.action_splash_to_home),
-                                    NEXT_STEP_DELAY
-                            );
+                            // Есть PIN, проверяем его
+                            runOnUi(() -> navigateToPinEntry());
                         }
                     }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        runOnUi(() -> needLogin("Ошибка сессии"));
-                    }
-                });
-            }
+                }
+                @Override
+                public void onError(String errorMessage) {
+                    runOnUi(() -> navigateToAuthWithMessage("Ошибка сессии"));
+                }
+            });
         }
     }
 
-    /** Показать кнопку «Повторить» */
+    /** Показывает кнопку “Повторить” при ошибке */
     private void showRetryButton() {
         runOnUi(() -> {
             splashProgress.setVisibility(View.GONE);
@@ -194,37 +199,37 @@ public class SplashFragment extends Fragment {
         });
     }
 
-    /** Показать кнопку «Войти» */
-    private void showLoginButton() {
+    /** Переход на экран Auth (с сообщением) */
+    private void navigateToAuthWithMessage(String message) {
         runOnUi(() -> {
-            splashProgress.setVisibility(View.GONE);
-            statusText.setVisibility(View.VISIBLE);
-            actionButton.setVisibility(View.VISIBLE);
-            actionButton.setEnabled(true);
-            actionButton.setText("Войти");
-            actionButton.setOnClickListener(v ->
+            setStatus(message);
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
                     NavHostFragment.findNavController(SplashFragment.this)
-                            .navigate(R.id.action_splash_to_auth)
-            );
+                            .navigate(R.id.action_splash_to_auth), NEXT_STEP_DELAY);
         });
     }
 
-    /** Перейти к Auth с сообщением */
-    private void needLogin(String message) {
-        runOnUi(() -> setStatus(message));
-        new Handler(Looper.getMainLooper())
-                .postDelayed(() -> runOnUi(this::showLoginButton), NEXT_STEP_DELAY);
+    /** Переход на экран Onboarding */
+    private void navigateToOnboarding() {
+        NavHostFragment.findNavController(SplashFragment.this)
+                .navigate(R.id.action_splash_to_onboarding);
     }
 
-    /** Простой вызов UI‑операции в главном потоке */
-    private void runOnUi(Runnable block) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(block);
-        }
+    /** Переход на экран ввода/установки PIN */
+    private void navigateToPinEntry() {
+        NavHostFragment.findNavController(SplashFragment.this)
+                .navigate(R.id.action_splash_to_pin);
     }
 
     /** Установить текст статуса */
     private void setStatus(String text) {
         statusText.setText(text);
+    }
+
+    /** Безопасный вызов UI‑операции из любого потока */
+    private void runOnUi(Runnable block) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(block);
+        }
     }
 }

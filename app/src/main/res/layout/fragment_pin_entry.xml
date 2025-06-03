@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pinRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@color/colorBackground">
+
+    <!-- Заголовок -->
+    <TextView
+        android:id="@+id/pinTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Введите PIN‑код"
+        android:textAppearance="@style/TextAppearance.OpenFashion.H2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Поле для PIN (4 цифры) -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pinInputLayout"
+        style="@style/Widget.OpenFashion.TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="PIN‑код (4 цифры)"
+        app:layout_constraintTop_toBottomOf="@id/pinTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/pinEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberPassword"
+            android:maxLength="4"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Кнопка “Подтвердить” -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/confirmPinButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="Подтвердить"
+        style="@style/Widget.OpenFashion.Button"
+        app:layout_constraintTop_toBottomOf="@id/pinInputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/pinProgress"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        style="?android:attr/progressBarStyleLarge"
+        android:visibility="gone"
+        android:indeterminateTint="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/confirmPinButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <!-- Текст ошибки -->
+    <TextView
+        android:id="@+id/pinErrorText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorError"
+        android:visibility="gone"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
+        app:layout_constraintTop_toBottomOf="@id/pinProgress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
