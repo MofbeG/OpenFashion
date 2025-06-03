@@ -1,5 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Основные цвета из Figma‑дизайна Open Fashion -->
+
+    <!-- 1. Primary / Акцентный цвет (фиолетовый #693EFE) -->
+    <color name="colorPrimary">#693EFE</color>
+    <color name="purple_500">#693EFE</color>
+    <!-- Более тёмный оттенок для status bar, кнопок pressed и т. д. -->
+    <color name="colorPrimaryDark">#4E1BFE</color>
+    <!-- Более светлый («tint») оттенок для hover, disabled и т. д. -->
+    <color name="colorPrimaryLight">#9A7DFE</color>
+
+    <!-- 2. Secondary / Дополнительный цвет (оранжево‑красный #FE693E) -->
+    <color name="colorSecondary">#FE693E</color>
+    <!-- Тёмный вариант secondary (для pressed) -->
+    <color name="colorSecondaryDark">#D3542E</color>
+    <!-- Светлый вариант secondary (для hover) -->
+    <color name="colorSecondaryLight">#FE9C7E</color>
+
+    <!-- 3. Accent / Акцентный розовый (из Figma: #FF6F61) -->
+    <color name="colorAccent">#FF6F61</color>
+    <color name="colorAccentDark">#E65B51</color>
+    <color name="colorAccentLight">#FF9486</color>
+
+    <!-- 4. Background / Фоновые цвета -->
+    <!-- Основной белый фон экрана -->
+    <color name="colorBackground">#FFFFFF</color>
+    <!-- Тёмно‑серая подложка (Card background, List item, Footer) -->
+    <color name="colorSurface">#F5F5F5</color>
+    <!-- Ещё более тёмный фон (Drawer, Bottom navigation) -->
+    <color name="colorSurfaceDark">#EEEEEE</color>
+
+    <!-- 5. Text / Текстовые цвета -->
+    <!-- Основной цвет текста (тёмно‑серый #212121) -->
+    <color name="textPrimary">#212121</color>
+    <!-- Второстепенный текст (серый #757575) -->
+    <color name="textSecondary">#757575</color>
+    <!-- Текст на светлом фоне (белый) -->
+    <color name="textOnPrimary">#FFFFFF</color>
+    <!-- Текст на тёмном фоне (чёрный) -->
+    <color name="textOnSurface">#000000</color>
+
+    <!-- 6. Divider / Разделители -->
+    <color name="divider">#E0E0E0</color>
+
+    <!-- 7. Error / Цвет ошибок -->
+    <color name="colorError">#B00020</color>
+    <color name="colorErrorDark">#790000</color>
+
+    <!-- 8. Дополнительные вспомогательные цвета из Figma -->
+
+    <!-- Тёмно‑фиолетовый (например, для заголовков или активных табов) -->
+    <color name="purpleDark">#3901FB</color>
+    <!-- Голубоватый (для иконок, неактивных состояний) -->
+    <color name="blueLight">#3E73FE</color>
+    <!-- Зелёный (например, для статуса «Доставлено» в заказах) -->
+    <color name="statusSuccess">#3EFE69</color>
+    <!-- Красный (для статуса «Cancelled» или ошибок) -->
+    <color name="statusError">#FE3E3E</color>
+    <!-- Жёлтый (для предупреждений или акцентных деталей) -->
+    <color name="statusWarning">#FEC93E</color>
+
+    <!-- 9. Полупрозрачные варианты (если нужны в дизайне) -->
+    <!-- Полупрозрачный чёрный для overlay (60% opacity) -->
+    <color name="overlayBlack60">#99000000</color>
+    <!-- Полупрозрачный чёрный для overlay (30% opacity) -->
+    <color name="overlayBlack30">#4D000000</color>
+    <!-- Полупрозрачный белый (для disabled‑состояний) -->
+    <color name="overlayWhite20">#33FFFFFF</color>
 </resources>

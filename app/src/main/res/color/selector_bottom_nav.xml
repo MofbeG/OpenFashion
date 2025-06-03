@@ -1,0 +1,7 @@
+<!-- res/color/selector_bottom_nav.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Активный элемент -->
+    <item android:color="@color/colorPrimary" android:state_checked="true" />
+    <!-- Неактивный элемент -->
+    <item android:color="@color/textSecondary" android:state_checked="false" />
+</selector>

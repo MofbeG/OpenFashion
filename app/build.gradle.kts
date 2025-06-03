@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.sigma.openfashion"
-        minSdk = 30
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -39,9 +39,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    // Supabase Java (используем официальную библиотеку supabase‑java)
-    implementation(libs.supabase.java)
 
     // OkHttp + Retrofit (для работы с REST‑запросами, если потребуется)
     implementation(libs.retrofit)
