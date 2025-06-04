@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +24,7 @@ import com.sigma.openfashion.data.SupabaseService;
  * PinEntryFragment: ввод и установка PIN‑кода.
  */
 public class PinEntryFragment extends Fragment {
-
+    private TextView pinTitle;
     private TextInputEditText pinEditText;
     private MaterialButton confirmPinButton;
     private MaterialTextView errorText;
@@ -31,7 +32,8 @@ public class PinEntryFragment extends Fragment {
 
     private SupabaseService supabaseService;
     private SharedPrefHelper prefs;
-    private String userId;
+    private String tempPin;
+    private int count;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -43,6 +45,7 @@ public class PinEntryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        pinTitle           = view.findViewById(R.id.pinTitle);
         pinEditText        = view.findViewById(R.id.pinEditText);
         confirmPinButton   = view.findViewById(R.id.confirmPinButton);
         errorText          = view.findViewById(R.id.pinErrorText);
@@ -50,7 +53,9 @@ public class PinEntryFragment extends Fragment {
 
         prefs            = SharedPrefHelper.getInstance(requireContext());
         supabaseService  = new SupabaseService();
-        userId           = prefs.getUserId();
+
+        if (prefs.getUserPin() == null)
+            pinTitle.setText("Установка PIN-кода");
 
         confirmPinButton.setOnClickListener(v -> attemptPin());
     }
@@ -61,40 +66,49 @@ public class PinEntryFragment extends Fragment {
             pinEditText.setError("Введите 4 цифры");
             return;
         }
+        pinEditText.setText("");
         hideError();
         showProgress(true);
 
-        String savedPin = prefs.getUserPin(); // метод getUserPin() в SharedPrefHelper
+        if (count >= 2) {
+            prefs.saveUserEmail(null);
+            prefs.saveUserId(null);
+            prefs.saveRefreshToken(null);
+            prefs.saveJwtToken(null);
+            NavHostFragment.findNavController(PinEntryFragment.this)
+                    .navigate(R.id.action_pin_to_auth);
+            return;
+        }
+
+        String savedPin = prefs.getUserPin();
         if (savedPin == null) {
-            // Устанавливаем PIN впервые: сохраняем локально и в таблицу profiles.pin_code
-            prefs.saveUserPin(pin);
-            supabaseService.setJwtToken(prefs.getJwtToken());
-            supabaseService.upsertProfile(userId, null, null, null, new SupabaseService.QueryCallback() {
-                @Override public void onSuccess(String jsonResponse) {
-                    updateProfilePinOnServer(pin);
-                }
-                @Override public void onError(String errorMessage) {
-                    showError(errorMessage);
-                }
-            });
+            showProgress(false);
+            if (tempPin == null ||tempPin.trim().isEmpty()) {
+                tempPin = pin;
+                showError("Введите PIN-код ещё раз.");
+            } else if (tempPin.equals(pin)) {
+                updateProfilePinOnServer(tempPin);
+            } else {
+                tempPin = null;
+                showError("PIN-коды разные! Введите ещё раз.");
+            }
         } else {
-            // Сравниваем с локально сохраненным PIN
             if (savedPin.equals(pin)) {
-                // PIN верный → переходим в Home
                 requireActivity().runOnUiThread(() -> {
                     showProgress(false);
                     NavHostFragment.findNavController(PinEntryFragment.this)
                             .navigate(R.id.action_pin_to_home);
                 });
             } else {
-                showError("Неверный PIN‑код");
+                count++;
+                showError("Неверный PIN‑код. Осталось попыток: " + count + " из 3");
             }
         }
     }
 
     /** Обновляем поле pin_code в таблице profiles */
     private void updateProfilePinOnServer(String pin) {
-        // Предположим, что upsertProfile может принимать null для остальных полей.
+        /*// Предположим, что upsertProfile может принимать null для остальных полей.
         supabaseService.upsertProfile(userId, null, null, null, new SupabaseService.QueryCallback() {
             @Override public void onSuccess(String jsonResponse) {
                 // На самом деле нужно создать эндпоинт для обновления только PIN, но для простоты
@@ -108,6 +122,12 @@ public class PinEntryFragment extends Fragment {
             @Override public void onError(String errorMessage) {
                 showError(errorMessage);
             }
+        });*/
+        prefs.saveUserPin(pin);
+        requireActivity().runOnUiThread(() -> {
+            showProgress(false);
+            NavHostFragment.findNavController(PinEntryFragment.this)
+                    .navigate(R.id.action_pin_to_home);
         });
     }
 

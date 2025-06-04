@@ -2,6 +2,7 @@ package com.sigma.openfashion.ui.auth;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.sigma.openfashion.R;
+import com.sigma.openfashion.SharedPrefHelper;
+import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
 
 /**
@@ -29,7 +32,7 @@ public class ResetPasswordFragment extends Fragment {
     private ProgressBar resetProgress;
 
     private SupabaseService supabaseService;
-    private String email; // из аргументов
+    private SharedPrefHelper prefs;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -42,15 +45,18 @@ public class ResetPasswordFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         newPasswordEditText       = view.findViewById(R.id.newPasswordEditText);
-        confirmNewPasswordEditText = view.findViewById(R.id.confirmNewPasswordEditText);
+        confirmNewPasswordEditText= view.findViewById(R.id.confirmNewPasswordEditText);
         updatePasswordButton      = view.findViewById(R.id.updatePasswordButton);
         errorText                 = view.findViewById(R.id.resetErrorText);
         resetProgress             = view.findViewById(R.id.resetProgress);
 
+        prefs                     = SharedPrefHelper.getInstance(requireContext());
+
         supabaseService = new SupabaseService();
         Bundle args = getArguments();
         if (args != null) {
-            email = args.getString("email");
+            String accessToken = args.getString("access_token");
+            supabaseService.setJwtToken(accessToken);
         }
 
         updatePasswordButton.setOnClickListener(v -> attemptResetPassword());
@@ -60,21 +66,24 @@ public class ResetPasswordFragment extends Fragment {
         String newPass = newPasswordEditText.getText() != null ? newPasswordEditText.getText().toString().trim() : "";
         String confirm = confirmNewPasswordEditText.getText() != null ? confirmNewPasswordEditText.getText().toString().trim() : "";
 
-        if (TextUtils.isEmpty(newPass) || newPass.length() > 8) {
-            newPasswordEditText.setError("Пароль: 1–8 символов");
+        if (!Validator.validatePassword(newPass, requireContext())) {
+            newPasswordEditText.setError("Неверный формат пароля");
+            return;
+        }
+        if (!Validator.validatePassword(confirm, requireContext())) {
+            confirmNewPasswordEditText.setError("Неверный формат пароля");
             return;
         }
         if (!newPass.equals(confirm)) {
+            newPasswordEditText.setError("Пароли не совпадают");
             confirmNewPasswordEditText.setError("Пароли не совпадают");
             return;
         }
         hideError();
         showProgress(true);
 
-        supabaseService.resetPassword(email, newPass, new SupabaseService.QueryCallback() {
-            @Override public void onSuccess(String jsonResponse) {
-                handleResetSuccess();
-            }
+        supabaseService.resetPassword(newPass, new SupabaseService.QueryCallback() {
+            @Override public void onSuccess(String jsonResponse) { handleResetSuccess(); }
             @Override public void onError(String errorMessage) {
                 showError(errorMessage);
             }
@@ -84,6 +93,7 @@ public class ResetPasswordFragment extends Fragment {
     private void handleResetSuccess() {
         requireActivity().runOnUiThread(() -> {
             showProgress(false);
+            prefs.saveUserPin(null);
             // После сброса пароля возвращаемся к экрану входа
             NavHostFragment.findNavController(ResetPasswordFragment.this)
                     .navigate(R.id.action_resetPassword_to_auth);

@@ -3,6 +3,7 @@ package com.sigma.openfashion.ui.splash;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.ScaleAnimation;
@@ -104,7 +105,7 @@ public class SplashFragment extends Fragment {
 
     /** Этап 2: Проверка доступности Supabase */
     private void checkServer() {
-        runOnUi(() -> setStatus("Проверка сервера…"));
+        runOnUi(() -> setStatus("Проверка доступности сервера…"));
 
         supabaseService.checkServerConnection(new SupabaseService.QueryCallback() {
             @Override
@@ -150,7 +151,6 @@ public class SplashFragment extends Fragment {
 
         String jwt    = prefs.getJwtToken();
         String userId = prefs.getUserId();
-        String pin    = prefs.getUserPin();
 
         if (jwt == null || jwt.isEmpty() || userId == null || userId.isEmpty()) {
             // Нет JWT/профиля → идём на Onboarding или сразу на Auth
@@ -161,17 +161,12 @@ public class SplashFragment extends Fragment {
             supabaseService.getProfile(userId, new SupabaseService.QueryCallback() {
                 @Override
                 public void onSuccess(String jsonResponse) {
+                    Log.d("SplashFragment", jsonResponse);
                     // Если профиль пустой, считаем, что сессия истекла
                     if (jsonResponse.trim().equals("[]")) {
                         runOnUi(() -> navigateToAuthWithMessage("Сессия устарела"));
                     } else {
-                        // Если PIN не установлен, сразу просим установить
-                        if (pin == null || pin.isEmpty()) {
-                            runOnUi(() -> navigateToPinEntry());
-                        } else {
-                            // Есть PIN, проверяем его
-                            runOnUi(() -> navigateToPinEntry());
-                        }
+                        runOnUi(() -> navigateToPinEntry());
                     }
                 }
                 @Override

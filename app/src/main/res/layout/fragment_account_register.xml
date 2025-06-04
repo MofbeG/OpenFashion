@@ -13,79 +13,77 @@
         android:id="@+id/signUpTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Регистрация"
+        android:text="Заполнение данных"
         android:textAppearance="@style/TextAppearance.OpenFashion.H2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Email -->
+    <!-- Имя пользователя -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signUpEmailLayout"
+        android:id="@+id/usernameInputLayout"
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:hint="Имя пользователя"
         app:layout_constraintTop_toBottomOf="@id/signUpTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="24dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signUpEmailEditText"
+            android:id="@+id/usernameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textPersonName"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Пароль -->
+    <!-- Address -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signUpPasswordLayout"
+        android:id="@+id/signUpAddressLayout"
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Пароль"
-        app:passwordToggleEnabled="true"
-        app:layout_constraintTop_toBottomOf="@id/signUpEmailLayout"
+        android:hint="Адрес"
+        app:layout_constraintTop_toBottomOf="@id/usernameInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signUpPasswordEditText"
+            android:id="@+id/signUpAddressEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="textPostalAddress"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Повтор пароля -->
+    <!-- Phone -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signUpConfirmPasswordLayout"
+        android:id="@+id/signUpPhoneLayout"
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Повторите пароль"
-        app:passwordToggleEnabled="true"
-        app:layout_constraintTop_toBottomOf="@id/signUpPasswordLayout"
+        android:hint="Телефон"
+        app:layout_constraintTop_toBottomOf="@id/signUpAddressLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signUpConfirmPasswordEditText"
+            android:id="@+id/signUpPhoneEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="phone"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Кнопка “Зарегистрироваться” -->
+    <!-- Кнопка “Продолжить” -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createAccountButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:text="Зарегистрироваться"
+        android:text="Продолжить"
         style="@style/Widget.OpenFashion.Button"
-        app:layout_constraintTop_toBottomOf="@id/signUpConfirmPasswordLayout"
+        app:layout_constraintTop_toBottomOf="@id/signUpPhoneLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp"/>

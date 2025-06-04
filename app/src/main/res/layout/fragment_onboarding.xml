@@ -13,7 +13,7 @@
         android:id="@+id/onboardingText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Добро пожаловать в Open Fashion!\nСвайпните, чтобы узнать больше."
+        android:text="Добро пожаловать в Open Fashion!\nСвайпните, чтобы узнать больше."
         android:textAppearance="@style/TextAppearance.OpenFashion.H3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

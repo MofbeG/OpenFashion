@@ -1,7 +1,12 @@
+// SignUpFragment.java (обновлённый фрагмент)
+
 package com.sigma.openfashion.ui.auth;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
+import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
 
 import org.json.JSONException;
@@ -27,7 +33,9 @@ import org.json.JSONObject;
  */
 public class SignUpFragment extends Fragment {
 
-    private TextInputEditText usernameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
+    private static final String TAG = "SignUpFragment";
+
+    private TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText;
     private MaterialButton createAccountButton;
     private MaterialTextView errorText;
     private ProgressBar signUpProgress;
@@ -45,7 +53,6 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usernameEditText        = view.findViewById(R.id.usernameEditText);
         emailEditText           = view.findViewById(R.id.signUpEmailEditText);
         passwordEditText        = view.findViewById(R.id.signUpPasswordEditText);
         confirmPasswordEditText = view.findViewById(R.id.signUpConfirmPasswordEditText);
@@ -60,87 +67,75 @@ public class SignUpFragment extends Fragment {
     }
 
     private void attemptSignUp() {
-        String username = usernameEditText.getText() != null ? usernameEditText.getText().toString().trim() : "";
-        String email    = emailEditText.getText() != null ? emailEditText.getText().toString().trim() : "";
-        String password = passwordEditText.getText() != null ? passwordEditText.getText().toString().trim() : "";
-        String confirm  = confirmPasswordEditText.getText() != null ? confirmPasswordEditText.getText().toString().trim() : "";
+        String email    = emailEditText.getText() != null
+                ? emailEditText.getText().toString().trim()
+                : "";
+        String password = passwordEditText.getText() != null
+                ? passwordEditText.getText().toString().trim()
+                : "";
+        String confirm  = confirmPasswordEditText.getText() != null
+                ? confirmPasswordEditText.getText().toString().trim()
+                : "";
 
-        // Валидация
-        if (TextUtils.isEmpty(username) || username.length() > 20) {
-            usernameEditText.setError("Имя: 1–20 символов");
-            return;
-        }
-        if (TextUtils.isEmpty(email)) {
-            emailEditText.setError("Введите email");
-            return;
-        }
-        if (!email.matches("^[a-z0-9]+@[a-z0-9]+\\.[a-z]{2,}$")) {
+        if (!Validator.validateEmail(email, requireContext())) {
             emailEditText.setError("Неверный формат email");
             return;
         }
-        if (TextUtils.isEmpty(password) || password.length() > 8) {
-            passwordEditText.setError("Пароль: 1–8 символов");
+        if (!Validator.validatePassword(password, requireContext())) {
+            passwordEditText.setError("Неверный формат пароля");
+            return;
+        }
+        if (!Validator.validatePassword(confirm, requireContext())) {
+            confirmPasswordEditText.setError("Неверный формат пароля");
             return;
         }
         if (!password.equals(confirm)) {
             confirmPasswordEditText.setError("Пароли не совпадают");
+            passwordEditText.setError("Пароли не совпадают");
             return;
         }
         hideError();
         showProgress(true);
 
-        // Сначала регистрируемся в Supabase Auth
+        // Регистрируемся в Supabase Auth
         supabaseService.signUp(email, password, new SupabaseService.QueryCallback() {
-            @Override public void onSuccess(String jsonResponse) {
-                handleSignUpSuccess(jsonResponse, username);
+            @Override
+            public void onSuccess(String jsonResponse) {
+                handleSignUpSuccess(jsonResponse);
             }
-            @Override public void onError(String errorMessage) {
+            @Override
+            public void onError(String errorMessage) {
                 showError(errorMessage);
             }
         });
     }
 
-    private void handleSignUpSuccess(String json, String username) {
+    /**
+     * Обработка ответа при регистрации:
+     * - Если вернулся поля "session", берём из него access_token и user.id, создаём профиль и идём к PIN.
+     * - Если поля "session" нет, значит нужно подтвердить email: возвращаем на экран входа с сообщением.
+     */
+    private void handleSignUpSuccess(String json) {
         requireActivity().runOnUiThread(() -> {
             try {
-                JSONObject obj       = new JSONObject(json);
-                JSONObject session   = obj.optJSONObject("session");
-                JSONObject userObj   = obj.optJSONObject("user");
-                String accessToken   = session != null ? session.optString("access_token", null) : null;
-                String userId        = userObj != null ? userObj.optString("id", null) : null;
+                JSONObject obj     = new JSONObject(json);
+                String userId      = obj.optString("id", null);
+                String userEmail   = obj.optString("email", null);
 
-                if (accessToken != null && userId != null) {
-                    // Сохраняем токен и id
-                    prefs.saveJwtToken(accessToken);
-                    prefs.saveUserId(userId);
-                    prefs.saveUserEmail(userObj.optString("email", ""));
+                prefs.saveUserId(userId);
+                prefs.saveUserEmail(userEmail);
+                prefs.saveUserPin(null);
 
-                    // Создаём профиль в таблице profiles
-                    createProfile(userId, username, userObj.optString("email", ""));
-
-                } else {
-                    showError("Неверный ответ сервера");
-                }
+                showProgress(false);
+                errorText.setText("Проверьте почту и залогиньтесь в аккаунт");
+                errorText.setVisibility(View.VISIBLE);
+                createAccountButton.setText("Назад");
+                createAccountButton.setOnClickListener(v -> {
+                    NavHostFragment.findNavController(SignUpFragment.this)
+                            .navigate(R.id.action_signUp_to_auth);
+                });
             } catch (JSONException e) {
                 showError("Ошибка парсинга: " + e.getMessage());
-            }
-        });
-    }
-
-    /** После регистрации создаём профиль в таблице profiles */
-    private void createProfile(String userId, String username, String email) {
-        supabaseService.setJwtToken(prefs.getJwtToken());
-        supabaseService.upsertProfile(userId, username, "", "", new SupabaseService.QueryCallback() {
-            @Override public void onSuccess(String jsonResponse) {
-                requireActivity().runOnUiThread(() -> {
-                    showProgress(false);
-                    // Переходим на экран ввода PIN‑кода
-                    NavHostFragment.findNavController(SignUpFragment.this)
-                            .navigate(R.id.action_signUp_to_pin);
-                });
-            }
-            @Override public void onError(String errorMessage) {
-                showError(errorMessage);
             }
         });
     }

@@ -2,6 +2,7 @@ package com.sigma.openfashion.ui.auth;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.sigma.openfashion.R;
+import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * OtpVerificationFragment: ввод и проверка OTP‑кода.
@@ -29,7 +34,9 @@ public class OtpVerificationFragment extends Fragment {
     private ProgressBar progressBar;
 
     private SupabaseService supabaseService;
-    private String email; // получим из аргументов
+    private boolean isAuthEmail;
+    private String email;
+    private SharedPrefHelper prefs;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -46,11 +53,13 @@ public class OtpVerificationFragment extends Fragment {
         errorText         = view.findViewById(R.id.otpErrorText);
         progressBar       = view.findViewById(R.id.otpProgress);
 
+        prefs           = SharedPrefHelper.getInstance(requireContext());
         supabaseService = new SupabaseService();
-        // Читаем email из аргументов
+
         Bundle args = getArguments();
         if (args != null) {
             email = args.getString("email");
+            isAuthEmail = args.getBoolean("isAuthEmail");
         }
 
         verifyOtpButton.setOnClickListener(v -> attemptVerifyOtp());
@@ -67,7 +76,7 @@ public class OtpVerificationFragment extends Fragment {
 
         supabaseService.verifyOtp(email, otp, new SupabaseService.QueryCallback() {
             @Override public void onSuccess(String jsonResponse) {
-                handleOtpSuccess();
+                handleOtpSuccess(jsonResponse);
             }
             @Override public void onError(String errorMessage) {
                 showError(errorMessage);
@@ -75,14 +84,38 @@ public class OtpVerificationFragment extends Fragment {
         });
     }
 
-    private void handleOtpSuccess() {
+    private void handleOtpSuccess(String json) {
         requireActivity().runOnUiThread(() -> {
-            showProgress(false);
-            // Переходим на экран сброса пароля, передав email дальше
-            Bundle bundle = new Bundle();
-            bundle.putString("email", email);
-            NavHostFragment.findNavController(OtpVerificationFragment.this)
-                    .navigate(R.id.action_otp_to_resetPassword, bundle);
+            try {
+                JSONObject obj       = new JSONObject(json);
+                String accessToken   = obj.optString("access_token", null);
+                String refresh_token = obj.optString("refresh_token", null);
+                JSONObject userObj   = obj.optJSONObject("user");
+                String userId        = userObj != null ? userObj.optString("id", null) : null;
+
+                if (userId != null) {
+                    prefs.saveJwtToken(accessToken);
+                    prefs.saveRefreshToken(refresh_token);
+                    prefs.saveUserId(userId);
+                    prefs.saveUserPin(null);
+
+                    showProgress(false);
+
+                    if (isAuthEmail){
+                        NavHostFragment.findNavController(OtpVerificationFragment.this)
+                                .navigate(R.id.action_otp_to_pin);
+                    } else {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("access_token", accessToken);
+                        NavHostFragment.findNavController(OtpVerificationFragment.this)
+                                .navigate(R.id.action_otp_to_resetPassword, bundle);
+                    }
+                } else {
+                    showError("Неверный ответ сервера");
+                }
+            } catch (JSONException e) {
+                showError("Ошибка парсинга: " + e.getMessage());
+            }
         });
     }
 

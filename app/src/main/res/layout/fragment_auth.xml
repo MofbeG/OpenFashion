@@ -13,6 +13,7 @@
         android:id="@+id/authTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Вход"
         android:textAppearance="@style/TextAppearance.OpenFashion.H2"
         app:layout_constraintTop_toTopOf="parent"
@@ -70,59 +71,78 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp"/>
 
-    <!-- Ссылка “Зарегистрироваться” -->
+    <!-- Ссылка “Нет аккаунта?” -->
     <TextView
         android:id="@+id/noAccountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Нет аккаунта?"
         android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/signInButton"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/forgotPasswordText" />
 
+    <!-- Кнопка “Регистрация” -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signUpButton"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:text="Регистрация"
         style="@style/Widget.OpenFashion.Button"
-        app:layout_constraintTop_toBottomOf="@id/signInButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Регистрация"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/noAccountText" />
+
+    <!-- Вход по коду -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/loginEmailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Войти через почту"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
+        android:textColor="@color/colorSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signInButton" />
 
     <!-- Ссылка “Забыли пароль?” -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/forgotPasswordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Забыли пароль?"
         android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
         android:textColor="@color/colorSecondary"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/noAccountText"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginEmailText" />
 
     <!-- ProgressBar -->
     <ProgressBar
         android:id="@+id/authProgress"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        style="?android:attr/progressBarStyleLarge"
-        android:visibility="gone"
+        android:layout_marginTop="24dp"
         android:indeterminateTint="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/forgotPasswordText"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/forgotPasswordText" />
 
     <!-- Текст ошибки -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/errorText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/colorError"
         android:visibility="gone"
+        android:gravity="center"
         android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
         app:layout_constraintTop_toBottomOf="@id/authProgress"
         app:layout_constraintStart_toStartOf="parent"

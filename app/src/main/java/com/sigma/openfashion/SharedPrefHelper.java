@@ -9,6 +9,7 @@ public class SharedPrefHelper {
 
     private static final String PREF_NAME      = "com.sigma.openfashion.PREFS";
     private static final String KEY_JWT        = "KEY_JWT";
+    private static final String KEY_REFRESH    = "KEY_REFRESH";
     private static final String KEY_USER_ID    = "KEY_USER_ID";
     private static final String KEY_USER_EMAIL = "KEY_USER_EMAIL";
     private static final String KEY_USER_PIN   = "KEY_USER_PIN";
@@ -40,6 +41,15 @@ public class SharedPrefHelper {
     @Nullable
     public String getJwtToken() {
         return prefs.getString(KEY_JWT, null);
+    }
+
+    public void saveRefreshToken(String refresh_token) {
+        prefs.edit().putString(KEY_REFRESH, refresh_token).apply();
+    }
+
+    @Nullable
+    public String getRefreshToken() {
+        return prefs.getString(KEY_REFRESH, null);
     }
 
     public void saveUserId(String userId) {

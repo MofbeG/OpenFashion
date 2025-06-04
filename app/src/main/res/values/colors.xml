@@ -3,7 +3,7 @@
     <!-- Основные цвета из Figma‑дизайна Open Fashion -->
 
     <!-- 1. Primary / Акцентный цвет (фиолетовый #693EFE) -->
-    <color name="colorPrimary">#693EFE</color>
+    <color name="colorPrimary">#DD8560</color>
     <color name="purple_500">#693EFE</color>
     <!-- Более тёмный оттенок для status bar, кнопок pressed и т. д. -->
     <color name="colorPrimaryDark">#4E1BFE</color>

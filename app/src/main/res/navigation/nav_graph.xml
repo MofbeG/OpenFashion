@@ -5,7 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/splashFragment">
 
-    <!-- 1. Splash -->
+    <!-- Splash -->
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.sigma.openfashion.ui.splash.SplashFragment"
@@ -28,7 +28,7 @@
             app:popUpToInclusive="true"/>
     </fragment>
 
-    <!-- 2. Onboarding (если не авторизован) -->
+    <!-- Onboarding -->
     <fragment
         android:id="@+id/onboardingFragment"
         android:name="com.sigma.openfashion.ui.onboarding.OnboardingFragment"
@@ -41,7 +41,7 @@
             app:popUpToInclusive="true"/>
     </fragment>
 
-    <!-- 3. Auth Fragment -->
+    <!-- Auth -->
     <fragment
         android:id="@+id/authFragment"
         android:name="com.sigma.openfashion.ui.auth.AuthFragment"
@@ -49,94 +49,100 @@
         tools:layout="@layout/fragment_auth">
         <action
             android:id="@+id/action_auth_to_signUp"
-            app:destination="@id/signUpFragment"/>
+            app:destination="@id/signUpFragment" />
         <action
             android:id="@+id/action_auth_to_passwordRecovery"
-            app:destination="@id/passwordRecoveryFragment"/>
+            app:destination="@id/passwordRecoveryFragment" />
         <action
-            android:id="@+id/action_auth_to_home"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/authFragment"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_auth_to_pin"
+            app:destination="@id/pinEntryFragment" />
+        <action
+            android:id="@+id/action_auth_to_reg"
+            app:destination="@id/regFragment" />
     </fragment>
 
-    <!-- 4. SignUp Fragment (Регистрация) -->
+    <!-- da -->
+    <fragment
+        android:id="@+id/regFragment"
+        android:name="com.sigma.openfashion.ui.reg.AccountRegisterFragment"
+        android:label="Заполнение данных"
+        tools:layout="@layout/fragment_account_register">
+        <action
+            android:id="@+id/action_reg_to_pin"
+            app:destination="@id/pinEntryFragment" />
+        <action
+            android:id="@+id/action_reg_to_auth"
+            app:destination="@id/authFragment" />
+    </fragment>
+
+    <!-- Sign Up -->
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.sigma.openfashion.ui.auth.SignUpFragment"
         android:label="Регистрация"
         tools:layout="@layout/fragment_sign_up">
         <action
-            android:id="@+id/action_signUp_to_home"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/signUpFragment"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_signUp_to_pin"
+            app:destination="@id/pinEntryFragment" />
+        <action
+            android:id="@+id/action_signUp_to_auth"
+            app:destination="@id/authFragment" />
     </fragment>
 
-    <!-- 5. Password Recovery (ввод email для OTP) -->
+    <!-- Password Recovery (ввод email) -->
     <fragment
         android:id="@+id/passwordRecoveryFragment"
         android:name="com.sigma.openfashion.ui.auth.PasswordRecoveryFragment"
-        android:label="Восстановление пароля"
+        android:label="Восстановление"
         tools:layout="@layout/fragment_password_recovery">
         <action
             android:id="@+id/action_recovery_to_otp"
-            app:destination="@id/otpVerificationFragment"
-            app:popUpTo="@id/passwordRecoveryFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/otpVerificationFragment" />
     </fragment>
 
-    <!-- 6. OTP Verification (ввод кода) -->
+    <!-- OTP Verification -->
     <fragment
         android:id="@+id/otpVerificationFragment"
         android:name="com.sigma.openfashion.ui.auth.OtpVerificationFragment"
-        android:label="Подтверждение OTP"
+        android:label="OTP"
         tools:layout="@layout/fragment_otp_verification">
         <action
             android:id="@+id/action_otp_to_resetPassword"
-            app:destination="@id/resetPasswordFragment"
-            app:popUpTo="@id/otpVerificationFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/resetPasswordFragment" />
+        <action
+            android:id="@+id/action_otp_to_pin"
+            app:destination="@id/pinEntryFragment" />
     </fragment>
 
-    <!-- 7. Reset Password (ввод нового пароля) -->
+    <!-- Reset Password -->
     <fragment
         android:id="@+id/resetPasswordFragment"
         android:name="com.sigma.openfashion.ui.auth.ResetPasswordFragment"
-        android:label="Сброс пароля"
+        android:label="Новый пароль"
         tools:layout="@layout/fragment_reset_password">
         <action
             android:id="@+id/action_resetPassword_to_auth"
-            app:destination="@id/authFragment"
-            app:popUpTo="@id/resetPasswordFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/authFragment" />
     </fragment>
 
-    <!-- 8. PIN Entry (ввод PIN‑кода после входа) -->
+    <!-- PIN Entry -->
     <fragment
         android:id="@+id/pinEntryFragment"
         android:name="com.sigma.openfashion.ui.auth.PinEntryFragment"
-        android:label="Ввод PIN‑кода"
+        android:label="PIN"
         tools:layout="@layout/fragment_pin_entry">
         <action
-            android:id="@+id/action_pin_to_home"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/pinEntryFragment"
-            app:popUpToInclusive="true"/>
-        <action
             android:id="@+id/action_pin_to_auth"
-            app:destination="@id/authFragment"
-            app:popUpTo="@id/pinEntryFragment"
-            app:popUpToInclusive="true"/>
+            app:destination="@id/authFragment" />
+        <action
+            android:id="@+id/action_pin_to_home"
+            app:destination="@id/homeFragment" />
     </fragment>
 
-    <!-- 9. Home Fragment (главный экран после логина) -->
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.sigma.openfashion.ui.home.HomeFragment"
         android:label="Главная"
-        tools:layout="@layout/fragment_home">
-        <!-- далее переходы на профиль, корзину и т.д. через BottomNav -->
-    </fragment>
+        tools:layout="@layout/fragment_home" />
 
 </navigation>

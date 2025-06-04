@@ -30,8 +30,8 @@ import okio.Buffer;
 public class SupabaseService {
 
     private static final String TAG = "SupabaseService";
-    private static final String SUPABASE_URL = "https://bdeeqmuzkarbifypuniz.supabase.co";
-    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZWVxbXV6a2FyYmlmeXB1bml6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4ODY1ODgsImV4cCI6MjA2NDQ2MjU4OH0.ZUXI8b2UiiDUBzkqky4TpMRv0e_JzBB6yHIX4ZOX-1A";
+    private static final String SUPABASE_URL = "https://hufhfmqquczxpxpmtzbf.supabase.co";
+    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1ZmhmbXFxdWN6eHB4cG10emJmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODk2MzAyMiwiZXhwIjoyMDY0NTM5MDIyfQ.PdHrf08FbC7DFgnEWVJZqgzQq84Cx1KE0tBA0nTHc3Q";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     private final OkHttpClient client;
@@ -100,6 +100,52 @@ public class SupabaseService {
         });
     }
 
+    /**
+     * JWT Token Update
+     * Выполняет POST /auth/v1/token?grant_type=refresh_token
+     */
+    public void refreshSession(String refreshToken, QueryCallback callback) {
+        String url = SUPABASE_URL + "/auth/v1/token?grant_type=refresh_token";
+        Log.d(TAG, "refreshSession URL: " + url);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("refresh_token", refreshToken);
+        } catch (JSONException e) {
+            callback.onError("JSON error: " + e.getMessage());
+            return;
+        }
+        RequestBody body = RequestBody.create(json.toString(), JSON);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .headers(getCommonHeaders())
+                .build();
+        logRequest(request);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "refreshSession onFailure: " + e.getMessage());
+                callback.onError(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d(TAG, "refreshSession response code: " + response.code());
+                try {
+                    String resp = response.body() != null ? response.body().string() : "";
+                    if (response.isSuccessful()) {
+                        callback.onSuccess(resp);
+                    } else {
+                        callback.onError("HTTP " + response.code() + ": " + resp);
+                    }
+                } catch (IOException e) {
+                    callback.onError("IO error: " + e.getMessage());
+                } finally {
+                    response.close();
+                }
+            }
+        });
+    }
 
     /** 1. Регистрация **/
     public void signUp(String email, String password, QueryCallback callback) {
@@ -146,7 +192,7 @@ public class SupabaseService {
     /** 3. Запрос OTP‑кода для восстановления пароля **/
     public void requestOtp(String email, QueryCallback callback) {
         // Предполагаем, что на сервере заведён таблица otp_requests или Edge Function
-        String url = SUPABASE_URL + "/rest/v1/otp_requests";
+        String url = SUPABASE_URL + "/auth/v1/otp";
         JSONObject json = new JSONObject();
         try {
             json.put("email", email);
@@ -184,11 +230,12 @@ public class SupabaseService {
 
     /** 4. Проверка OTP‑кода **/
     public void verifyOtp(String email, String otpCode, QueryCallback callback) {
-        String url = SUPABASE_URL + "/rest/v1/otp_verifications";
+        String url = SUPABASE_URL + "/auth/v1/verify";
         JSONObject json = new JSONObject();
         try {
             json.put("email", email);
-            json.put("otp", otpCode);
+            json.put("token", otpCode);
+            json.put("type", "email");
         } catch (JSONException e) {
             callback.onError("JSON error: " + e.getMessage());
             return;
@@ -222,12 +269,11 @@ public class SupabaseService {
     }
 
     /** 5. Сброс пароля после подтверждения OTP **/
-    public void resetPassword(String email, String newPassword, QueryCallback callback) {
-        String url = SUPABASE_URL + "/auth/v1/recover";
+    public void resetPassword(String newPassword, QueryCallback callback) {
+        String url = SUPABASE_URL + "/auth/v1/user";
         JSONObject json = new JSONObject();
         try {
-            json.put("email", email);
-            json.put("new_password", newPassword);
+            json.put("password", newPassword);
         } catch (JSONException e) {
             callback.onError("JSON error: " + e.getMessage());
             return;
@@ -235,8 +281,8 @@ public class SupabaseService {
         RequestBody body = RequestBody.create(json.toString(), JSON);
         Request request = new Request.Builder()
                 .url(url)
-                .post(body)
-                .headers(getCommonHeaders())
+                .patch(body)
+                .headers(getAuthHeaders())
                 .build();
         logRequest(request);
         client.newCall(request).enqueue(parseAuthCallback(callback));
@@ -273,7 +319,6 @@ public class SupabaseService {
             }
         });
     }
-
 
     /* ==================== PROFILES ==================== */
 
@@ -312,6 +357,7 @@ public class SupabaseService {
                 .url(url)
                 .post(body)
                 .headers(getAuthHeadersBuilder()
+                        .add("Content-Type", "application/json")
                         .add("Prefer", "resolution=merge-duplicates")
                         .build())
                 .build();
@@ -660,10 +706,14 @@ public class SupabaseService {
             @Override public void onResponse(Call call, Response response) {
                 try {
                     String resp = response.body() != null ? response.body().string() : "";
+
+                    Log.d("HTTP_CODE", String.valueOf(response.code()));
+                    Log.d("RESPONSE_BODY", resp);
+
                     if (response.isSuccessful()) {
                         callback.onSuccess(resp);
                     } else {
-                        callback.onError("HTTP " + response.code() + ": " + resp);
+                        callback.onError(resp);
                     }
                 } catch (IOException e) {
                     callback.onError("IO error: " + e.getMessage());
