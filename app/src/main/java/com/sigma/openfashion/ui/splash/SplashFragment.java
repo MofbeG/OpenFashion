@@ -20,6 +20,9 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * SplashFragment — загрузочный экран с анимацией и проверкой:
  * 1. сеть
@@ -149,22 +152,62 @@ public class SplashFragment extends Fragment {
     private void checkSession() {
         runOnUi(() -> setStatus("Проверка сессии…"));
 
-        String jwt    = prefs.getJwtToken();
-        String userId = prefs.getUserId();
+        String jwt             = prefs.getJwtToken();
+        String refreshToken    = prefs.getRefreshToken();
+        String userId          = prefs.getUserId();
 
         if (jwt == null || jwt.isEmpty() || userId == null || userId.isEmpty()) {
             // Нет JWT/профиля → идём на Onboarding или сразу на Auth
-            runOnUi(() -> navigateToOnboarding());
+            runOnUi(this::navigateToOnboarding);
         } else {
             // Есть JWT, проверяем профиль, затем PIN
             supabaseService.setJwtToken(jwt);
+            supabaseService.signIn( new SupabaseService.QueryCallback() {
+                @Override
+                public void onSuccess(String jsonResponse) {
+                    nextTo();
+                }
+                @Override
+                public void onError(String errorMessage) {
+                    if (refreshToken == null || refreshToken.trim().isEmpty()){
+                        runOnUi(() -> navigateToAuthWithMessage("Ошибка сессии"));
+                    } else {
+                        runOnUi(()-> supabaseService.refreshSession(refreshToken, new SupabaseService.QueryCallback() {
+                            @Override
+                            public void onSuccess(String jsonResponse) {
+                                try {
+                                    JSONObject obj       = new JSONObject(jsonResponse);
+                                    String accessToken   = obj.optString("access_token", null);
+                                    String refresh_token = obj.optString("refresh_token", null);
+
+                                    prefs.saveJwtToken(accessToken);
+                                    prefs.saveRefreshToken(refresh_token);
+                                    nextTo();
+                                } catch (JSONException e) {
+                                    setStatus("Ошибка парсинга: " + e.getMessage());
+                                    showRetryButton();
+                                }
+                            }
+                            @Override
+                            public void onError(String errorMessage) {
+                                prefs.clearAll();
+                                runOnUi(() -> navigateToAuthWithMessage("Ошибка обновления токена"));
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
+
+    private void nextTo() {
+        runOnUi(() -> {
+            String userId = prefs.getUserId();
             supabaseService.getProfile(userId, new SupabaseService.QueryCallback() {
                 @Override
                 public void onSuccess(String jsonResponse) {
-                    Log.d("SplashFragment", jsonResponse);
-                    // Если профиль пустой, считаем, что сессия истекла
                     if (jsonResponse.trim().equals("[]")) {
-                        runOnUi(() -> navigateToAuthWithMessage("Сессия устарела"));
+                        runOnUi(() -> navigateToRegWithMessage("Нужно заполнить данные"));
                     } else {
                         runOnUi(() -> navigateToPinEntry());
                     }
@@ -174,7 +217,7 @@ public class SplashFragment extends Fragment {
                     runOnUi(() -> navigateToAuthWithMessage("Ошибка сессии"));
                 }
             });
-        }
+        });
     }
 
     /** Показывает кнопку “Повторить” при ошибке */
@@ -201,6 +244,16 @@ public class SplashFragment extends Fragment {
             new Handler(Looper.getMainLooper()).postDelayed(() ->
                     NavHostFragment.findNavController(SplashFragment.this)
                             .navigate(R.id.action_splash_to_auth), NEXT_STEP_DELAY);
+        });
+    }
+
+    /** Переход на экран Reg (с сообщением) */
+    private void navigateToRegWithMessage(String message) {
+        runOnUi(() -> {
+            setStatus(message);
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                    NavHostFragment.findNavController(SplashFragment.this)
+                            .navigate(R.id.action_splash_to_reg), NEXT_STEP_DELAY);
         });
     }
 

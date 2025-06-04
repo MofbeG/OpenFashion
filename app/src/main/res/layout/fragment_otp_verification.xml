@@ -35,7 +35,8 @@
             android:id="@+id/otpEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"/>  <!-- только цифры -->
+            android:gravity="center"
+            android:inputType="number"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Кнопка “Подтвердить код” -->

@@ -27,7 +27,7 @@ public class PinEntryFragment extends Fragment {
     private TextView pinTitle;
     private TextInputEditText pinEditText;
     private MaterialButton confirmPinButton;
-    private MaterialTextView errorText;
+    private MaterialTextView errorText, exitText;
     private ProgressBar pinProgress;
 
     private SupabaseService supabaseService;
@@ -49,6 +49,7 @@ public class PinEntryFragment extends Fragment {
         pinEditText        = view.findViewById(R.id.pinEditText);
         confirmPinButton   = view.findViewById(R.id.confirmPinButton);
         errorText          = view.findViewById(R.id.pinErrorText);
+        exitText           = view.findViewById(R.id.exitText);
         pinProgress        = view.findViewById(R.id.pinProgress);
 
         prefs            = SharedPrefHelper.getInstance(requireContext());
@@ -56,7 +57,10 @@ public class PinEntryFragment extends Fragment {
 
         if (prefs.getUserPin() == null)
             pinTitle.setText("Установка PIN-кода");
+        else
+            exitText.setVisibility(View.VISIBLE);
 
+        exitText.setOnClickListener(view1 -> exit());
         confirmPinButton.setOnClickListener(v -> attemptPin());
     }
 
@@ -71,37 +75,31 @@ public class PinEntryFragment extends Fragment {
         showProgress(true);
 
         if (count >= 2) {
-            prefs.saveUserEmail(null);
-            prefs.saveUserId(null);
-            prefs.saveRefreshToken(null);
-            prefs.saveJwtToken(null);
-            NavHostFragment.findNavController(PinEntryFragment.this)
-                    .navigate(R.id.action_pin_to_auth);
-            return;
-        }
-
-        String savedPin = prefs.getUserPin();
-        if (savedPin == null) {
-            showProgress(false);
-            if (tempPin == null ||tempPin.trim().isEmpty()) {
-                tempPin = pin;
-                showError("Введите PIN-код ещё раз.");
-            } else if (tempPin.equals(pin)) {
-                updateProfilePinOnServer(tempPin);
-            } else {
-                tempPin = null;
-                showError("PIN-коды разные! Введите ещё раз.");
-            }
+            exit();
         } else {
-            if (savedPin.equals(pin)) {
-                requireActivity().runOnUiThread(() -> {
-                    showProgress(false);
-                    NavHostFragment.findNavController(PinEntryFragment.this)
-                            .navigate(R.id.action_pin_to_home);
-                });
+            String savedPin = prefs.getUserPin();
+            if (savedPin == null) {
+                showProgress(false);
+                if (tempPin == null ||tempPin.trim().isEmpty()) {
+                    tempPin = pin;
+                    showError("Введите PIN-код ещё раз.");
+                } else if (tempPin.equals(pin)) {
+                    updateProfilePinOnServer(tempPin);
+                } else {
+                    tempPin = null;
+                    showError("PIN-коды разные! Введите ещё раз.");
+                }
             } else {
-                count++;
-                showError("Неверный PIN‑код. Осталось попыток: " + count + " из 3");
+                if (savedPin.equals(pin)) {
+                    requireActivity().runOnUiThread(() -> {
+                        showProgress(false);
+                        NavHostFragment.findNavController(PinEntryFragment.this)
+                                .navigate(R.id.action_pin_to_home);
+                    });
+                } else {
+                    count++;
+                    showError("Неверный PIN‑код. Осталось попыток: " + count + " из 3");
+                }
             }
         }
     }
@@ -128,6 +126,24 @@ public class PinEntryFragment extends Fragment {
             showProgress(false);
             NavHostFragment.findNavController(PinEntryFragment.this)
                     .navigate(R.id.action_pin_to_home);
+        });
+    }
+
+    private void exit() {
+        showProgress(true);
+        supabaseService.setJwtToken(prefs.getJwtToken());
+        supabaseService.logout(prefs.getRefreshToken(), new SupabaseService.QueryCallback() {
+            @Override public void onSuccess(String jsonResponse) {
+                requireActivity().runOnUiThread(() -> {
+                    showProgress(false);
+                    prefs.clearAll();
+                    NavHostFragment.findNavController(PinEntryFragment.this)
+                            .navigate(R.id.action_pin_to_auth);
+                });
+            }
+            @Override public void onError(String errorMessage) {
+                showError(errorMessage);
+            }
         });
     }
 

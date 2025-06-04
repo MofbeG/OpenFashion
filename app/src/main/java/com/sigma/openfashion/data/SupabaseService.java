@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.json.JSONException;
@@ -31,7 +32,7 @@ public class SupabaseService {
 
     private static final String TAG = "SupabaseService";
     private static final String SUPABASE_URL = "https://hufhfmqquczxpxpmtzbf.supabase.co";
-    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1ZmhmbXFxdWN6eHB4cG10emJmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0ODk2MzAyMiwiZXhwIjoyMDY0NTM5MDIyfQ.PdHrf08FbC7DFgnEWVJZqgzQq84Cx1KE0tBA0nTHc3Q";
+    private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1ZmhmbXFxdWN6eHB4cG10emJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5NjMwMjIsImV4cCI6MjA2NDUzOTAyMn0.yNIiBC7Xx4Jz-b-XqdCPPUqlHP0ZGy2bgog8tabaA-k";
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     private final OkHttpClient client;
@@ -80,24 +81,7 @@ public class SupabaseService {
                 .headers(getCommonHeaders())
                 .build();
         logRequest(request);
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "checkServerConnection onFailure: " + e.getMessage());
-                callback.onError(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                Log.d(TAG, "checkServerConnection response code: " + response.code());
-                if (response.isSuccessful()) {
-                    callback.onSuccess("OK");
-                } else {
-                    callback.onError("Server error: " + response.code());
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(openCallback(callback));
     }
 
     /**
@@ -106,7 +90,6 @@ public class SupabaseService {
      */
     public void refreshSession(String refreshToken, QueryCallback callback) {
         String url = SUPABASE_URL + "/auth/v1/token?grant_type=refresh_token";
-        Log.d(TAG, "refreshSession URL: " + url);
         JSONObject json = new JSONObject();
         try {
             json.put("refresh_token", refreshToken);
@@ -121,30 +104,7 @@ public class SupabaseService {
                 .headers(getCommonHeaders())
                 .build();
         logRequest(request);
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "refreshSession onFailure: " + e.getMessage());
-                callback.onError(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, "refreshSession response code: " + response.code());
-                try {
-                    String resp = response.body() != null ? response.body().string() : "";
-                    if (response.isSuccessful()) {
-                        callback.onSuccess(resp);
-                    } else {
-                        callback.onError("HTTP " + response.code() + ": " + resp);
-                    }
-                } catch (IOException e) {
-                    callback.onError("IO error: " + e.getMessage());
-                } finally {
-                    response.close();
-                }
-            }
-        });
+        client.newCall(request).enqueue(openCallback(callback));
     }
 
     /** 1. Регистрация **/
@@ -165,7 +125,7 @@ public class SupabaseService {
                 .headers(getCommonHeaders())
                 .build();
         logRequest(request);
-        client.newCall(request).enqueue(parseAuthCallback(callback));
+        client.newCall(request).enqueue(openCallback(callback));
     }
 
     /** 2. Вход **/
@@ -186,7 +146,39 @@ public class SupabaseService {
                 .headers(getCommonHeaders())
                 .build();
         logRequest(request);
-        client.newCall(request).enqueue(parseAuthCallback(callback));
+        client.newCall(request).enqueue(openCallback(callback));
+    }
+
+    /** Вход JWT **/
+    public void signIn(QueryCallback callback) {
+        String url = SUPABASE_URL + "/auth/v1/user";
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .headers(getAuthHeaders())
+                .build();
+        logRequest(request);
+        client.newCall(request).enqueue(openCallback(callback));
+    }
+
+    /** Выход **/
+    public void logout(String refreshToken, QueryCallback callback) {
+        String url = SUPABASE_URL + "/auth/v1/logout";
+        JSONObject json = new JSONObject();
+        try {
+            json.put("refresh_token", refreshToken);
+        } catch (JSONException e) {
+            callback.onError("JSON error: " + e.getMessage());
+            return;
+        }
+        RequestBody body = RequestBody.create(json.toString(), JSON);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .headers(getAuthHeaders())
+                .build();
+        logRequest(request);
+        client.newCall(request).enqueue(openCallback(callback));
     }
 
     /** 3. Запрос OTP‑кода для восстановления пароля **/
@@ -207,25 +199,7 @@ public class SupabaseService {
                 .headers(getCommonHeaders())
                 .build();
         logRequest(request);
-        client.newCall(request).enqueue(new Callback() {
-            @Override public void onFailure(Call call, IOException e) {
-                callback.onError("Network error: " + e.getMessage());
-            }
-            @Override public void onResponse(Call call, Response response) {
-                try {
-                    String resp = response.body() != null ? response.body().string() : "";
-                    if (response.isSuccessful()) {
-                        callback.onSuccess(resp); // ожидаем, что сервер вернёт { "status": "sent" }
-                    } else {
-                        callback.onError("HTTP " + response.code() + ": " + resp);
-                    }
-                } catch (IOException e) {
-                    callback.onError("IO error: " + e.getMessage());
-                } finally {
-                    response.close();
-                }
-            }
-        });
+        client.newCall(request).enqueue(openCallback(callback));
     }
 
     /** 4. Проверка OTP‑кода **/
@@ -247,25 +221,7 @@ public class SupabaseService {
                 .headers(getCommonHeaders())
                 .build();
         logRequest(request);
-        client.newCall(request).enqueue(new Callback() {
-            @Override public void onFailure(Call call, IOException e) {
-                callback.onError("Network error: " + e.getMessage());
-            }
-            @Override public void onResponse(Call call, Response response) {
-                try {
-                    String resp = response.body() != null ? response.body().string() : "";
-                    if (response.isSuccessful()) {
-                        callback.onSuccess(resp); // { "status": "verified" }
-                    } else {
-                        callback.onError("HTTP " + response.code() + ": " + resp);
-                    }
-                } catch (IOException e) {
-                    callback.onError("IO error: " + e.getMessage());
-                } finally {
-                    response.close();
-                }
-            }
-        });
+        client.newCall(request).enqueue(openCallback(callback));
     }
 
     /** 5. Сброс пароля после подтверждения OTP **/
@@ -285,7 +241,7 @@ public class SupabaseService {
                 .headers(getAuthHeaders())
                 .build();
         logRequest(request);
-        client.newCall(request).enqueue(parseAuthCallback(callback));
+        client.newCall(request).enqueue(openCallback(callback));
     }
 
     /** 6. Загрузка аватара в Supabase Storage **/
@@ -303,10 +259,10 @@ public class SupabaseService {
                 .build();
         logRequest(request);
         client.newCall(request).enqueue(new Callback() {
-            @Override public void onFailure(Call call, IOException e) {
+            @Override public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 callback.onError("Upload failed: " + e.getMessage());
             }
-            @Override public void onResponse(Call call, Response response) {
+            @Override public void onResponse(@NonNull Call call, @NonNull Response response) {
                 try {
                     if (response.isSuccessful()) {
                         callback.onSuccess("URL: https://bdeeqmuzkarbifypuniz.supabase.co/storage/v1/object/public/avatars/" + userId + ".jpg");
@@ -670,14 +626,14 @@ public class SupabaseService {
     private Callback openCallback(final QueryCallback callback) {
         return new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "Request failed: " + e.getMessage());
                 callback.onError(e.getMessage());
             }
 
             @Override
-            public void onResponse(Call call, Response response) {
-                try {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                try (response) {
                     Log.d(TAG, "Response received: code=" + response.code());
                     if (response.isSuccessful()) {
                         String body = response.body() != null ? response.body().string() : "";
@@ -691,34 +647,6 @@ public class SupabaseService {
                 } catch (IOException e) {
                     Log.e(TAG, "Error reading response: " + e.getMessage());
                     callback.onError(e.getMessage());
-                } finally {
-                    response.close();
-                }
-            }
-        };
-    }
-
-    private Callback parseAuthCallback(final QueryCallback callback) {
-        return new Callback() {
-            @Override public void onFailure(Call call, IOException e) {
-                callback.onError("Network error: " + e.getMessage());
-            }
-            @Override public void onResponse(Call call, Response response) {
-                try {
-                    String resp = response.body() != null ? response.body().string() : "";
-
-                    Log.d("HTTP_CODE", String.valueOf(response.code()));
-                    Log.d("RESPONSE_BODY", resp);
-
-                    if (response.isSuccessful()) {
-                        callback.onSuccess(resp);
-                    } else {
-                        callback.onError(resp);
-                    }
-                } catch (IOException e) {
-                    callback.onError("IO error: " + e.getMessage());
-                } finally {
-                    response.close();
                 }
             }
         };
@@ -746,7 +674,7 @@ public class SupabaseService {
 
     /** Callback-интерфейс для получения ответа сервера. */
     public interface QueryCallback {
-        void onSuccess(String jsonResponse);
+        void onSuccess(String response);
         void onError(String errorMessage);
     }
 }

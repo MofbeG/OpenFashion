@@ -35,6 +35,7 @@
             android:id="@+id/pinEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:inputType="numberPassword"
             android:maxLength="4"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -76,4 +77,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/exitText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Выйти с аккаунта"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body1"
+        android:textColor="@color/colorError"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

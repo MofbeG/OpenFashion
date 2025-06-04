@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Войти через почту"
+        android:text="Войти по почте"
         android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
         android:textColor="@color/colorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
