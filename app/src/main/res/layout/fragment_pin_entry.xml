@@ -2,55 +2,158 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pinRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@color/colorBackground">
+    android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
+    android:paddingVertical="@dimen/paddingVerticalMainLayout">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_open_fashion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Заголовок -->
     <TextView
         android:id="@+id/pinTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Введите PIN‑код"
-        android:textAppearance="@style/TextAppearance.OpenFashion.H2"
-        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="@string/enter_the_PIN_code"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Title"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <!-- Поле для PIN (4 цифры) -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/pinInputLayout"
-        style="@style/Widget.OpenFashion.TextInputLayout"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/pinDots"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="PIN‑код (4 цифры)"
-        app:layout_constraintTop_toBottomOf="@id/pinTitle"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/customKeyboard"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/pinEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:inputType="numberPassword"
-            android:maxLength="4"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Кнопка “Подтвердить” -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/confirmPinButton"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:text="Подтвердить"
-        style="@style/Widget.OpenFashion.Button"
-        app:layout_constraintTop_toBottomOf="@id/pinInputLayout"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pinTitle">
+
+        <!-- 4 TextView-кружочка -->
+        <TextView
+            android:layout_width="@dimen/PinDot"
+            android:layout_height="@dimen/PinDot"
+            android:id="@+id/pinDigit1"
+            style="@style/PinDot" />
+
+        <TextView
+            android:layout_width="@dimen/PinDot"
+            android:layout_height="@dimen/PinDot"
+            android:id="@+id/pinDigit2"
+            style="@style/PinDot" />
+
+        <TextView
+            android:layout_width="@dimen/PinDot"
+            android:layout_height="@dimen/PinDot"
+            android:id="@+id/pinDigit3"
+            style="@style/PinDot" />
+
+        <TextView
+            android:layout_width="@dimen/PinDot"
+            android:layout_height="@dimen/PinDot"
+            android:id="@+id/pinDigit4"
+            style="@style/PinDot" />
+    </LinearLayout>
+
+    <!-- Custom keyboard -->
+    <GridLayout
+        android:id="@+id/customKeyboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:alignmentMode="alignMargins"
+        android:columnCount="3"
+        android:columnOrderPreserved="false"
+        android:rowCount="4"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Digits -->
+        <Button
+            android:id="@+id/btn1"
+            style="@style/KeyButton"
+            android:text="1"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn2"
+            style="@style/KeyButton"
+            android:text="2"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn3"
+            style="@style/KeyButton"
+            android:text="3"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn4"
+            style="@style/KeyButton"
+            android:text="4"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn5"
+            style="@style/KeyButton"
+            android:text="5"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn6"
+            style="@style/KeyButton"
+            android:text="6"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn7"
+            style="@style/KeyButton"
+            android:text="7"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn8"
+            style="@style/KeyButton"
+            android:text="8"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn9"
+            style="@style/KeyButton"
+            android:text="9"
+            tools:ignore="HardcodedText" />
+
+        <Space style="@style/KeyButton" />
+
+        <Button
+            android:id="@+id/btn0"
+            style="@style/KeyButton"
+            android:text="0"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/deleteKey"
+            style="@style/KeyButton"
+            android:contentDescription="delete_key"
+            android:src="@drawable/delete"
+            tools:ignore="HardcodedText" />
+    </GridLayout>
 
     <!-- ProgressBar -->
     <ProgressBar
@@ -59,8 +162,7 @@
         android:layout_height="48dp"
         style="?android:attr/progressBarStyleLarge"
         android:visibility="gone"
-        android:indeterminateTint="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/confirmPinButton"
+        app:layout_constraintTop_toBottomOf="@id/customKeyboard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp"/>
@@ -72,7 +174,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorError"
         android:visibility="gone"
-        android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body.Medium"
         app:layout_constraintTop_toBottomOf="@id/pinProgress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,8 +186,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Выйти с аккаунта"
-        android:textAppearance="@style/TextAppearance.OpenFashion.Body1"
+        android:text="@string/Log_out_of_the_account"
+        android:textAppearance="@style/TextAppearance.OpenFashion.TextClick"
         android:textColor="@color/colorError"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -68,7 +68,7 @@ public class OtpVerificationFragment extends Fragment {
     private void attemptVerifyOtp() {
         String otp = otpEditText.getText() != null ? otpEditText.getText().toString().trim() : "";
         if (TextUtils.isEmpty(otp) || otp.length() != 6) {
-            otpEditText.setError("Введите 6 цифр");
+            otpEditText.setError(getString(R.string.Enter_6_digits));
             return;
         }
         hideError();
@@ -111,10 +111,10 @@ public class OtpVerificationFragment extends Fragment {
                                 .navigate(R.id.action_otp_to_resetPassword, bundle);
                     }
                 } else {
-                    showError("Неверный ответ сервера");
+                    showError(getString(R.string.Invalid_server_response));
                 }
             } catch (JSONException e) {
-                showError("Ошибка парсинга: " + e.getMessage());
+                showError(getString(R.string.Parse_Error) + e.getMessage());
             }
         });
     }

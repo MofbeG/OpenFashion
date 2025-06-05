@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="paddingVerticalMainLayout">20dp</dimen>
+    <dimen name="paddingHorizontalMainLayout">15dp</dimen>
+    <dimen name="PinDot">19dp</dimen>
+</resources>

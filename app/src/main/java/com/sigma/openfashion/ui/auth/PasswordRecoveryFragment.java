@@ -58,7 +58,7 @@ public class PasswordRecoveryFragment extends Fragment {
         }
 
         if (isAuthEmail)
-            recoveryTitle.setText("Вход по email");
+            recoveryTitle.setText(getString(R.string.Login_by_email));
 
         sendOtpButton.setOnClickListener(v -> attemptSendOtp());
     }
@@ -67,7 +67,7 @@ public class PasswordRecoveryFragment extends Fragment {
         String email = emailEditText.getText() != null ? emailEditText.getText().toString().trim() : "";
 
         if (!Validator.validateEmail(email, requireContext())) {
-            emailEditText.setError("Неверный формат email");
+            emailEditText.setError(getString(R.string.Incorrect_email_format));
             return;
         }
         hideError();
@@ -86,7 +86,6 @@ public class PasswordRecoveryFragment extends Fragment {
     private void handleOtpSent(String email) {
         requireActivity().runOnUiThread(() -> {
             showProgress(false);
-            // Передаём email дальше, чтобы OTPVerificationFragment знала, куда проверять
             Bundle bundle = new Bundle();
             bundle.putString("email", email);
             bundle.putBoolean("isAuthEmail", isAuthEmail);

@@ -60,4 +60,10 @@ dependencies {
     // Navigation Component
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+
+    // Блюр
+    implementation("com.github.Dimezis:BlurView:version-2.0.6")
+
+    // Палетка
+    implementation("androidx.palette:palette:1.0.0")
 }

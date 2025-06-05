@@ -3,7 +3,6 @@ package com.sigma.openfashion.ui.splash;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.ScaleAnimation;
@@ -93,12 +92,12 @@ public class SplashFragment extends Fragment {
         runOnUi(() -> {
             splashProgress.setVisibility(View.VISIBLE);
             statusText.setVisibility(View.VISIBLE);
-            setStatus("Проверка сети…");
+            setStatus(getString(R.string.Network_check));
         });
 
         if (!SupabaseService.isNetworkAvailable(requireContext())) {
             runOnUi(() -> {
-                setStatus("Нет интернета");
+                setStatus(getString(R.string.No_internet));
                 showRetryButton();
             });
         } else {
@@ -108,7 +107,7 @@ public class SplashFragment extends Fragment {
 
     /** Этап 2: Проверка доступности Supabase */
     private void checkServer() {
-        runOnUi(() -> setStatus("Проверка доступности сервера…"));
+        runOnUi(() -> setStatus(getString(R.string.Checking_server_availability)));
 
         supabaseService.checkServerConnection(new SupabaseService.QueryCallback() {
             @Override
@@ -120,7 +119,7 @@ public class SplashFragment extends Fragment {
             @Override
             public void onError(String errorMessage) {
                 runOnUi(() -> {
-                    setStatus("Сервер недоступен");
+                    setStatus(getString(R.string.Server_unavailable));
                     showRetryButton();
                 });
             }
@@ -129,7 +128,7 @@ public class SplashFragment extends Fragment {
 
     /** Этап 3: Загрузка категорий (или других стартовых данных) */
     private void loadCategories() {
-        runOnUi(() -> setStatus("Загрузка данных…"));
+        runOnUi(() -> setStatus(getString(R.string.Data_Loading)));
 
         supabaseService.getCategories(new SupabaseService.QueryCallback() {
             @Override
@@ -141,7 +140,7 @@ public class SplashFragment extends Fragment {
             @Override
             public void onError(String errorMessage) {
                 runOnUi(() -> {
-                    setStatus("Ошибка загрузки данных");
+                    setStatus(getString(R.string.Data_loading_error));
                     showRetryButton();
                 });
             }
@@ -150,7 +149,7 @@ public class SplashFragment extends Fragment {
 
     /** Этап 4: Проверка сессии (JWT + PIN или Onboarding) */
     private void checkSession() {
-        runOnUi(() -> setStatus("Проверка сессии…"));
+        runOnUi(() -> setStatus(getString(R.string.Checking_in_on_the_session)));
 
         String jwt             = prefs.getJwtToken();
         String refreshToken    = prefs.getRefreshToken();
@@ -170,7 +169,7 @@ public class SplashFragment extends Fragment {
                 @Override
                 public void onError(String errorMessage) {
                     if (refreshToken == null || refreshToken.trim().isEmpty()){
-                        runOnUi(() -> navigateToAuthWithMessage("Ошибка сессии"));
+                        runOnUi(() -> navigateToAuthWithMessage(getString(R.string.Session_error)));
                     } else {
                         runOnUi(()-> supabaseService.refreshSession(refreshToken, new SupabaseService.QueryCallback() {
                             @Override
@@ -184,14 +183,15 @@ public class SplashFragment extends Fragment {
                                     prefs.saveRefreshToken(refresh_token);
                                     nextTo();
                                 } catch (JSONException e) {
-                                    setStatus("Ошибка парсинга: " + e.getMessage());
+                                    setStatus(getString(R.string.Parse_Error) + e.getMessage());
                                     showRetryButton();
                                 }
                             }
                             @Override
                             public void onError(String errorMessage) {
-                                prefs.clearAll();
-                                runOnUi(() -> navigateToAuthWithMessage("Ошибка обновления токена"));
+                                prefs.saveJwtToken(null);
+                                prefs.saveRefreshToken(null);
+                                runOnUi(() -> navigateToAuthWithMessage(getString(R.string.Token_update_error)));
                             }
                         }));
                     }
@@ -207,14 +207,14 @@ public class SplashFragment extends Fragment {
                 @Override
                 public void onSuccess(String jsonResponse) {
                     if (jsonResponse.trim().equals("[]")) {
-                        runOnUi(() -> navigateToRegWithMessage("Нужно заполнить данные"));
+                        runOnUi(() -> navigateToRegWithMessage());
                     } else {
                         runOnUi(() -> navigateToPinEntry());
                     }
                 }
                 @Override
                 public void onError(String errorMessage) {
-                    runOnUi(() -> navigateToAuthWithMessage("Ошибка сессии"));
+                    runOnUi(() -> navigateToAuthWithMessage(getString(R.string.Session_error)));
                 }
             });
         });
@@ -227,11 +227,11 @@ public class SplashFragment extends Fragment {
             statusText.setVisibility(View.VISIBLE);
             actionButton.setVisibility(View.VISIBLE);
             actionButton.setEnabled(true);
-            actionButton.setText("Повторить");
+            actionButton.setText(getString(R.string.Repeat));
             actionButton.setOnClickListener(v -> {
                 actionButton.setVisibility(View.GONE);
                 splashProgress.setVisibility(View.VISIBLE);
-                setStatus("Повторная проверка…");
+                setStatus(getString(R.string.Re_checking));
                 startInitialization();
             });
         });
@@ -248,9 +248,8 @@ public class SplashFragment extends Fragment {
     }
 
     /** Переход на экран Reg (с сообщением) */
-    private void navigateToRegWithMessage(String message) {
+    private void navigateToRegWithMessage() {
         runOnUi(() -> {
-            setStatus(message);
             new Handler(Looper.getMainLooper()).postDelayed(() ->
                     NavHostFragment.findNavController(SplashFragment.this)
                             .navigate(R.id.action_splash_to_reg), NEXT_STEP_DELAY);

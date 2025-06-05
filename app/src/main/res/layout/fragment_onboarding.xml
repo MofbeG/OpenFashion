@@ -4,9 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/onboardingRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
     <!-- Простой набор из 2–3 экранов, здесь покажем заголовок и кнопку “Далее” -->
     <TextView
@@ -14,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Добро пожаловать в Open Fashion!\nСвайпните, чтобы узнать больше."
-        android:textAppearance="@style/TextAppearance.OpenFashion.H3"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body.Medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -22,11 +20,12 @@
     <!-- “Далее” -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/onboardingNextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:text="Далее"
         style="@style/Widget.OpenFashion.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Next"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -35,7 +35,7 @@ public class SignUpFragment extends Fragment {
 
     private static final String TAG = "SignUpFragment";
 
-    private TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText;
+    private TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText, nameEditText, lastnameEditText, signUpAddressEditText, signUpPhoneEditText;
     private MaterialButton createAccountButton;
     private MaterialTextView errorText;
     private ProgressBar signUpProgress;
@@ -53,7 +53,11 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        emailEditText           = view.findViewById(R.id.signUpEmailEditText);
+        emailEditText           = view.findViewById(R.id.emailEditText);
+        nameEditText            = view.findViewById(R.id.nameEditText);
+        lastnameEditText        = view.findViewById(R.id.lastnameEditText);
+        signUpAddressEditText   = view.findViewById(R.id.signUpAddressEditText);
+        signUpPhoneEditText     = view.findViewById(R.id.signUpPhoneEditText);
         passwordEditText        = view.findViewById(R.id.signUpPasswordEditText);
         confirmPasswordEditText = view.findViewById(R.id.signUpConfirmPasswordEditText);
         createAccountButton     = view.findViewById(R.id.createAccountButton);
@@ -62,6 +66,11 @@ public class SignUpFragment extends Fragment {
 
         supabaseService = new SupabaseService();
         prefs           = SharedPrefHelper.getInstance(requireContext());
+
+        view.findViewById(R.id.linearLayoutOnClick).setOnClickListener(v -> {
+            NavHostFragment.findNavController(SignUpFragment.this)
+                    .navigate(R.id.action_signUp_to_auth);
+        });
 
         createAccountButton.setOnClickListener(v -> attemptSignUp());
     }
@@ -76,22 +85,46 @@ public class SignUpFragment extends Fragment {
         String confirm  = confirmPasswordEditText.getText() != null
                 ? confirmPasswordEditText.getText().toString().trim()
                 : "";
+        String first_name  = nameEditText.getText() != null
+                ? nameEditText.getText().toString().trim()
+                : "";
+        String last_name  = lastnameEditText.getText() != null
+                ? lastnameEditText.getText().toString().trim()
+                : "";
+        String adress  = signUpAddressEditText.getText() != null
+                ? signUpAddressEditText.getText().toString().trim()
+                : "";
+        String phone  = signUpPhoneEditText.getText() != null
+                ? signUpPhoneEditText.getText().toString().trim()
+                : "";
 
         if (!Validator.validateEmail(email, requireContext())) {
-            emailEditText.setError("Неверный формат email");
+            emailEditText.setError(getString(R.string.Incorrect_email_format));
+            return;
+        }
+        if (!Validator.validateUsername(first_name, requireContext())) {
+            nameEditText.setError(getString(R.string.Incorrect_name_format));
+            return;
+        }
+        if (!last_name.trim().isEmpty() && !Validator.validateUsername(last_name, requireContext())) {
+            lastnameEditText.setError(getString(R.string.Incorrect_name_format));
+            return;
+        }
+        if (!Validator.validatePhone(phone, requireContext())) {
+            signUpPhoneEditText.setError(getString(R.string.Incorrect_phone_format));
             return;
         }
         if (!Validator.validatePassword(password, requireContext())) {
-            passwordEditText.setError("Неверный формат пароля");
+            passwordEditText.setError(getString(R.string.Incorrect_password_format));
             return;
         }
         if (!Validator.validatePassword(confirm, requireContext())) {
-            confirmPasswordEditText.setError("Неверный формат пароля");
+            confirmPasswordEditText.setError(getString(R.string.Incorrect_password_format));
             return;
         }
         if (!password.equals(confirm)) {
-            confirmPasswordEditText.setError("Пароли не совпадают");
-            passwordEditText.setError("Пароли не совпадают");
+            confirmPasswordEditText.setError(getString(R.string.The_passwords_dont_match));
+            passwordEditText.setError(getString(R.string.The_passwords_dont_match));
             return;
         }
         hideError();
@@ -101,7 +134,7 @@ public class SignUpFragment extends Fragment {
         supabaseService.signUp(email, password, new SupabaseService.QueryCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
-                handleSignUpSuccess(jsonResponse);
+                handleSignUpSuccess(jsonResponse, first_name, last_name, adress, phone);
             }
             @Override
             public void onError(String errorMessage) {
@@ -115,27 +148,50 @@ public class SignUpFragment extends Fragment {
      * - Если вернулся поля "session", берём из него access_token и user.id, создаём профиль и идём к PIN.
      * - Если поля "session" нет, значит нужно подтвердить email: возвращаем на экран входа с сообщением.
      */
-    private void handleSignUpSuccess(String json) {
-        requireActivity().runOnUiThread(() -> {
+    private void handleSignUpSuccess(String json, String first_name, String last_name, String adress, String phone) {
+        runOnUi(() -> {
             try {
                 JSONObject obj     = new JSONObject(json);
-                String userId      = obj.optString("id", null);
-                String userEmail   = obj.optString("email", null);
+                JSONObject userObj = obj.getJSONObject("user");
 
-                prefs.saveUserId(userId);
-                prefs.saveUserEmail(userEmail);
-                prefs.saveUserPin(null);
+                if (userObj != null) {
+                    String access_token  = obj.optString("access_token", null);
+                    String refresh_token = obj.optString("refresh_token", null);
+                    String id            = userObj.optString("id", null);
+                    String email         = userObj.optString("email", null);
 
-                showProgress(false);
-                errorText.setText("Проверьте почту и залогиньтесь в аккаунт");
-                errorText.setVisibility(View.VISIBLE);
-                createAccountButton.setText("Назад");
-                createAccountButton.setOnClickListener(v -> {
-                    NavHostFragment.findNavController(SignUpFragment.this)
-                            .navigate(R.id.action_signUp_to_auth);
-                });
+                    prefs.saveRefreshToken(refresh_token);
+                    prefs.saveJwtToken(access_token);
+                    prefs.saveUserId(id);
+                    prefs.saveUserEmail(email);
+
+                    supabaseService.setJwtToken(access_token);
+                    supabaseService.upsertProfile(id, first_name, last_name, email, phone, adress, new SupabaseService.QueryCallback() {
+                        @Override
+                        public void onSuccess(String jsonResponse) {
+                            runOnUi(() -> {
+                                showProgress(false);
+                                NavHostFragment.findNavController(SignUpFragment.this)
+                                        .navigate(R.id.action_signUp_to_pin);
+                            });
+                        }
+                        @Override
+                        public void onError(String errorMessage) {
+                            showError(errorMessage);
+                        }
+                    });
+                } else {
+                    showProgress(false);
+                    errorText.setText(getString(R.string.Check_your_email_and_log_in_to_your_account));
+                    errorText.setVisibility(View.VISIBLE);
+                    createAccountButton.setText(getString(R.string.Back));
+                    createAccountButton.setOnClickListener(v -> {
+                        NavHostFragment.findNavController(SignUpFragment.this)
+                                .navigate(R.id.action_signUp_to_auth);
+                    });
+                }
             } catch (JSONException e) {
-                showError("Ошибка парсинга: " + e.getMessage());
+                showError(getString(R.string.Parse_Error) + e.getMessage());
             }
         });
     }
@@ -146,7 +202,7 @@ public class SignUpFragment extends Fragment {
     }
 
     private void showError(String message) {
-        requireActivity().runOnUiThread(() -> {
+        runOnUi(() -> {
             showProgress(false);
             errorText.setVisibility(View.VISIBLE);
             errorText.setText(message);
@@ -154,6 +210,12 @@ public class SignUpFragment extends Fragment {
     }
 
     private void hideError() {
-        requireActivity().runOnUiThread(() -> errorText.setVisibility(View.GONE));
+        runOnUi(() -> errorText.setVisibility(View.GONE));
+    }
+
+    private void runOnUi(Runnable block) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(block);
+        }
     }
 }

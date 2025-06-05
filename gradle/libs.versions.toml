@@ -1,5 +1,5 @@
 [versions]
-agp = "8.10.0"
+agp = "8.10.1"
 compiler = "4.12.0"
 constraintlayoutVersion = "2.1.4"
 converterGson = "2.9.0"

@@ -1,8 +1,6 @@
 package com.sigma.openfashion.ui.auth;
 
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,6 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
-import com.sigma.openfashion.ui.splash.SplashFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,8 +28,8 @@ import org.json.JSONObject;
 public class AuthFragment extends Fragment {
 
     private TextInputEditText emailEditText, passwordEditText;
-    private MaterialButton signInButton, signUpButton;
-    private MaterialTextView errorText, forgotPasswordText, loginEmailText;
+    private MaterialButton signInButton, signInEmailButton;
+    private MaterialTextView errorText, forgotPasswordText;
     private ProgressBar authProgress;
 
     private SupabaseService supabaseService;
@@ -51,9 +48,8 @@ public class AuthFragment extends Fragment {
         emailEditText      = view.findViewById(R.id.emailEditText);
         passwordEditText   = view.findViewById(R.id.passwordEditText);
         signInButton       = view.findViewById(R.id.signInButton);
-        signUpButton       = view.findViewById(R.id.signUpButton);
         forgotPasswordText = view.findViewById(R.id.forgotPasswordText);
-        loginEmailText     = view.findViewById(R.id.loginEmailText);
+        signInEmailButton  = view.findViewById(R.id.signInEmailButton);
         errorText          = view.findViewById(R.id.errorText);
         authProgress       = view.findViewById(R.id.authProgress);
 
@@ -61,7 +57,7 @@ public class AuthFragment extends Fragment {
         prefs           = SharedPrefHelper.getInstance(requireContext());
 
         signInButton.setOnClickListener(v -> attemptSignIn());
-        signUpButton.setOnClickListener(v ->
+        view.findViewById(R.id.linearLayoutOnClick).setOnClickListener(v ->
                 NavHostFragment.findNavController(AuthFragment.this)
                         .navigate(R.id.action_auth_to_signUp)
         );
@@ -69,12 +65,16 @@ public class AuthFragment extends Fragment {
                 NavHostFragment.findNavController(AuthFragment.this)
                         .navigate(R.id.action_auth_to_passwordRecovery)
         );
-        loginEmailText.setOnClickListener(v -> {
+        signInEmailButton.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isAuthEmail", true);
             NavHostFragment.findNavController(AuthFragment.this)
                     .navigate(R.id.action_auth_to_passwordRecovery, bundle);
         });
+
+        String email = prefs.getUserEmail();
+        if (email != null && !email.isEmpty())
+            emailEditText.setText(email);
     }
 
     private void attemptSignIn() {
@@ -82,11 +82,11 @@ public class AuthFragment extends Fragment {
         String password = passwordEditText.getText() != null ? passwordEditText.getText().toString().trim() : "";
 
         if (!Validator.validateEmail(email, requireContext())) {
-            emailEditText.setError("Неверный формат email");
+            emailEditText.setError(getString(R.string.Incorrect_email_format));
             return;
         }
         if (!Validator.validatePassword(password, requireContext())) {
-            passwordEditText.setError("Неверный формат пароля");
+            emailEditText.setError(getString(R.string.Incorrect_password_format));
             return;
         }
         hideError();
@@ -105,7 +105,7 @@ public class AuthFragment extends Fragment {
                     String msg           = obj.getString("msg");
                     showError(errorMessage);
                 } catch (JSONException e) {
-                    showError("Ошибка парсинга: " + e.getMessage());
+                    showError(getString(R.string.Parse_Error) + e.getMessage());
                 }
             }
         });
@@ -131,7 +131,6 @@ public class AuthFragment extends Fragment {
                     supabaseService.getProfile(userId, new SupabaseService.QueryCallback() {
                         @Override
                         public void onSuccess(String jsonResponse) {
-                            Log.d("ped", jsonResponse);
                             if (jsonResponse.trim().equals("[]")) {
                                 runOnUi(() -> navigateToRegEntry(json));
                             } else {
@@ -140,14 +139,14 @@ public class AuthFragment extends Fragment {
                         }
                         @Override
                         public void onError(String errorMessage) {
-                            showError("Ошибка: " + errorMessage);
+                            showError(getString(R.string.Error__) + errorMessage);
                         }
                     });
                 } else {
-                    showError("Неверный ответ сервера");
+                    showError(getString(R.string.Invalid_server_response));
                 }
             } catch (JSONException e) {
-                showError("Ошибка парсинга: " + e.getMessage());
+                showError(getString(R.string.Parse_Error) + e.getMessage());
             }
         });
     }
@@ -155,7 +154,6 @@ public class AuthFragment extends Fragment {
     private void showProgress(boolean show) {
         authProgress.setVisibility(show ? View.VISIBLE : View.GONE);
         signInButton.setEnabled(!show);
-        signUpButton.setEnabled(!show);
         forgotPasswordText.setEnabled(!show);
     }
 

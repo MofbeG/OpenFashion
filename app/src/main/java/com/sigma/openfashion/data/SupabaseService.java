@@ -293,12 +293,14 @@ public class SupabaseService {
     }
 
     /** Создать или обновить профиль (UPSERT). */
-    public void upsertProfile(String userId, String name, String phone, String address, QueryCallback callback) {
+    public void upsertProfile(String userId, String first_name, String last_name, String email, String phone, String address, QueryCallback callback) {
         String url = SUPABASE_URL + "/rest/v1/profiles";
         JSONObject json = new JSONObject();
         try {
             json.put("id", userId);
-            json.put("name", name);
+            json.put("first_name", first_name);
+            json.put("last_name", last_name);
+            json.put("email", email);
             json.put("phone", phone);
             json.put("address", address);
         } catch (JSONException e) {

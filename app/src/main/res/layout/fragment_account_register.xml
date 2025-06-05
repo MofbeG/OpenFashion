@@ -5,19 +5,31 @@
     android:id="@+id/signUpRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@color/colorBackground">
+    android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
+    android:paddingVertical="@dimen/paddingVerticalMainLayout"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_open_fashion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Заголовок -->
     <TextView
         android:id="@+id/signUpTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Заполнение данных"
-        android:textAppearance="@style/TextAppearance.OpenFashion.H2"
-        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:text="@string/data_filling"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Title"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <!-- Имя пользователя -->
     <com.google.android.material.textfield.TextInputLayout
@@ -25,13 +37,14 @@
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Имя пользователя"
+        android:hint="@string/first_name"
         app:layout_constraintTop_toBottomOf="@id/signUpTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.OpenFashion.TextInputEditText"
             android:id="@+id/usernameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,13 +57,14 @@
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Адрес"
+        android:hint="@string/Address"
         app:layout_constraintTop_toBottomOf="@id/usernameInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.OpenFashion.TextInputEditText"
             android:id="@+id/signUpAddressEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,13 +77,14 @@
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Телефон"
+        android:hint="@string/Phone"
         app:layout_constraintTop_toBottomOf="@id/signUpAddressLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.OpenFashion.TextInputEditText"
             android:id="@+id/signUpPhoneEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,8 +95,8 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createAccountButton"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:text="Продолжить"
+        android:layout_height="wrap_content"
+        android:text="@string/Continue"
         style="@style/Widget.OpenFashion.Button"
         app:layout_constraintTop_toBottomOf="@id/signUpPhoneLayout"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +110,6 @@
         android:layout_height="48dp"
         style="?android:attr/progressBarStyleLarge"
         android:visibility="gone"
-        android:indeterminateTint="@color/colorPrimary"
         app:layout_constraintTop_toBottomOf="@id/createAccountButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +122,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorError"
         android:visibility="gone"
-        android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body.Medium"
         app:layout_constraintTop_toBottomOf="@id/signUpProgress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

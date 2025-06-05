@@ -1,42 +1,36 @@
 <!-- res/values-night/themes.xml -->
-<resources xmlns:tools2="http://schemas.android.com/tools" xmlns:tools="http://schemas.android.com/apk/res/android" tools2:ignore="NamespaceTypo">
-
+<resources>
     <!-- Тёмная тема приложения -->
     <style name="Theme.OpenFashion" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/purpleDark</item>
-        <item name="colorPrimaryVariant">@color/purple_500</item>
-        <item name="colorOnPrimary">@color/textOnPrimary</item>
+        <!-- Основные цвета -->
+        <item name="colorPrimary">@color/Primary</item>
+        <item name="android:indeterminateTint">@color/Secondary</item>
+        <item name="android:textColorLink">@color/Secondary</item>
 
-        <item name="colorSecondary">@color/colorSecondaryDark</item>
-        <item name="colorOnSecondary">@color/textOnPrimary</item>
+        <!-- Фон и поверхность -->
+        <item name="android:windowBackground">@color/white</item>
 
-        <item name="android:statusBarColor">@color/purpleDark</item>
-        <item name="android:navigationBarColor">@color/colorSurfaceDark</item>
-
-        <item name="android:windowBackground">@color/colorSurfaceDark</item>
-        <item name="colorSurface">@color/colorSurface</item>
-        <item name="colorOnSurface">@color/textOnSurface</item>
-
+        <!-- Цвет ошибки -->
         <item name="colorError">@color/colorError</item>
-        <item name="colorOnError">@color/textOnPrimary</item>
 
-        <!-- Типография и скругления перенимают из светлой темы -->
-        <item name="textAppearanceHeadline1">@style/TextAppearance.OpenFashion.H1</item>
-        <item name="textAppearanceHeadline2">@style/TextAppearance.OpenFashion.H2</item>
-        <item name="textAppearanceHeadline3">@style/TextAppearance.OpenFashion.H3</item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.OpenFashion.Subtitle1</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.OpenFashion.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.OpenFashion.Body2</item>
+        <!-- Типография -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.OpenFashion.Title</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.OpenFashion.SubTitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.OpenFashion.SubTitle2</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.OpenFashion.Body.Large</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.OpenFashion.Body.Medium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.OpenFashion.Body.Small</item>
         <item name="textAppearanceButton">@style/TextAppearance.OpenFashion.Button</item>
         <item name="textAppearanceCaption">@style/TextAppearance.OpenFashion.Caption</item>
 
+        <!-- Скругления -->
         <item name="shapeAppearanceSmallComponent">@style/Shape.OpenFashion.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/Shape.OpenFashion.MediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/Shape.OpenFashion.LargeComponent</item>
 
+        <!-- Стили виджетов -->
         <item name="materialButtonStyle">@style/Widget.OpenFashion.Button</item>
-        <item name="cardViewStyle">@style/Widget.OpenFashion.CardView</item>
-        <item name="bottomNavigationStyle">@style/Widget.OpenFashion.BottomNavigationView</item>
+        <!-- Заменили materialTextInputStyle на textInputStyle -->
         <item name="textInputStyle">@style/Widget.OpenFashion.TextInputLayout</item>
     </style>
 </resources>

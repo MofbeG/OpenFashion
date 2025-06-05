@@ -67,16 +67,16 @@ public class ResetPasswordFragment extends Fragment {
         String confirm = confirmNewPasswordEditText.getText() != null ? confirmNewPasswordEditText.getText().toString().trim() : "";
 
         if (!Validator.validatePassword(newPass, requireContext())) {
-            newPasswordEditText.setError("Неверный формат пароля");
+            newPasswordEditText.setError(getString(R.string.Incorrect_password_format));
             return;
         }
         if (!Validator.validatePassword(confirm, requireContext())) {
-            confirmNewPasswordEditText.setError("Неверный формат пароля");
+            confirmNewPasswordEditText.setError(getString(R.string.Incorrect_password_format));
             return;
         }
         if (!newPass.equals(confirm)) {
-            newPasswordEditText.setError("Пароли не совпадают");
-            confirmNewPasswordEditText.setError("Пароли не совпадают");
+            newPasswordEditText.setError(getString(R.string.The_passwords_dont_match));
+            confirmNewPasswordEditText.setError(getString(R.string.The_passwords_dont_match));
             return;
         }
         hideError();
@@ -94,7 +94,6 @@ public class ResetPasswordFragment extends Fragment {
         requireActivity().runOnUiThread(() -> {
             showProgress(false);
             prefs.saveUserPin(null);
-            // После сброса пароля возвращаемся к экрану входа
             NavHostFragment.findNavController(ResetPasswordFragment.this)
                     .navigate(R.id.action_resetPassword_to_auth);
         });

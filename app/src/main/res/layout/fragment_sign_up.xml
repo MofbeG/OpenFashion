@@ -2,40 +2,215 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/signUpRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="@color/colorBackground">
+    android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
+    android:paddingVertical="@dimen/paddingVerticalMainLayout">
 
-    <!-- Заголовок -->
-    <TextView
-        android:id="@+id/signUpTitle"
-        android:layout_width="0dp"
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Регистрация"
-        android:textAppearance="@style/TextAppearance.OpenFashion.H2"
-        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/logo_open_fashion"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutOnClick"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="18sp"
+                android:text="@string/Account_Login"
+                android:textColor="@color/Placeholder"
+                android:textAppearance="@style/TextAppearance.OpenFashion.SubTitle2" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:src="@drawable/line" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="18sp"
+                android:text="@string/Registration"
+                android:textAppearance="@style/TextAppearance.OpenFashion.SubTitle2" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:src="@drawable/line_romb" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <TextView
+            style="@style/TextAppearance.OpenFashion.SubTitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/new_to" />
+
+        <TextView
+            style="@style/TextAppearance.OpenFashion.Body.Medium"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/register_to_speed_up_the_ncheckout_process_and_manage_nyour_order" />
+
+    </LinearLayout>
 
     <!-- Email -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/signUpEmailLayout"
+        android:id="@+id/emailLayout"
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        app:layout_constraintTop_toBottomOf="@id/signUpTitle"
+        android:hint="@string/email"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="26dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.OpenFashion.TextInputEditText"
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:id="@+id/linearLayout1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Имя пользователя -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameInputLayout"
+            style="@style/Widget.OpenFashion.TextInputLayout"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="@string/first_name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/Widget.OpenFashion.TextInputEditText"
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="match_parent"/>
+
+        <!-- Имя пользователя -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lastnameInputLayout"
+            style="@style/Widget.OpenFashion.TextInputLayout"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="@string/last_name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/Widget.OpenFashion.TextInputEditText"
+                android:id="@+id/lastnameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- Address -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signUpAddressLayout"
+        style="@style/Widget.OpenFashion.TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/Address"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signUpEmailEditText"
+            style="@style/Widget.OpenFashion.TextInputEditText"
+            android:id="@+id/signUpAddressEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textPostalAddress"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Phone -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/signUpPhoneLayout"
+        style="@style/Widget.OpenFashion.TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/Phone"
+        app:layout_constraintTop_toBottomOf="@id/signUpAddressLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.OpenFashion.TextInputEditText"
+            android:id="@+id/signUpPhoneEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Пароль -->
@@ -44,14 +219,15 @@
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Пароль"
+        android:hint="@string/Password"
         app:passwordToggleEnabled="true"
-        app:layout_constraintTop_toBottomOf="@id/signUpEmailLayout"
+        app:layout_constraintTop_toBottomOf="@id/signUpPhoneLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.OpenFashion.TextInputEditText"
             android:id="@+id/signUpPasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +240,7 @@
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Повторите пароль"
+        android:hint="@string/Confirm_password"
         app:passwordToggleEnabled="true"
         app:layout_constraintTop_toBottomOf="@id/signUpPasswordLayout"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,23 +248,38 @@
         android:layout_marginTop="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.OpenFashion.TextInputEditText"
             android:id="@+id/signUpConfirmPasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/textView"
+        style="@style/TextAppearance.OpenFashion.Body.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxEms="17"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:autoLink="web"
+        android:text="@string/register_terms"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUpConfirmPasswordLayout" />
+
     <!-- Кнопка “Зарегистрироваться” -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createAccountButton"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:text="Зарегистрироваться"
         style="@style/Widget.OpenFashion.Button"
-        app:layout_constraintTop_toBottomOf="@id/signUpConfirmPasswordLayout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Sign_up"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <!-- ProgressBar -->
     <ProgressBar
@@ -97,7 +288,6 @@
         android:layout_height="48dp"
         style="?android:attr/progressBarStyleLarge"
         android:visibility="gone"
-        android:indeterminateTint="@color/colorPrimary"
         app:layout_constraintTop_toBottomOf="@id/createAccountButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,7 +300,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorError"
         android:visibility="gone"
-        android:textAppearance="@style/TextAppearance.OpenFashion.Body2"
+        android:textAppearance="@style/TextAppearance.OpenFashion.Body.Medium"
         app:layout_constraintTop_toBottomOf="@id/signUpProgress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
