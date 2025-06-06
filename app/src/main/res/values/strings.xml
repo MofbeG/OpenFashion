@@ -66,10 +66,11 @@
     <string name="new_to">Вы новенький?</string>
     <string name="register_terms">
         Нажимая кнопку «Зарегистрироваться», вы соглашаетесь с нашим
-        <a href="https://yourwebsite.com/terms">Техническими условиями</a> и
-        <a href="https://yourwebsite.com/privacy">политикой конфиденциальности</a>.
+        <a href="https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/kall//terms">Техническими условиями</a> и
+        <a href="https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/kall//privacy">политикой конфиденциальности</a>.
     </string>
     <string name="sign_in_to_speed_up_the_checkout_nprocess_and_manage_your_orders">Войдите в систему, чтобы ускорить процесс оформления заказа и управлять своими заказами</string>
     <string name="have_an_account">У вас есть аккаунт?</string>
     <string name="or">Или</string>
+    <string name="Start">Начать</string>
 </resources>

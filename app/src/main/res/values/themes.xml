@@ -7,6 +7,7 @@
         <item name="colorPrimary">@color/Primary</item>
         <item name="android:indeterminateTint">@color/TitleActive</item>
         <item name="android:textColorLink">@color/Secondary</item>
+        <item name="android:colorControlActivated">@color/Secondary</item>
 
         <!-- Фон и поверхность -->
         <item name="android:windowBackground">@color/white</item>
@@ -31,6 +32,7 @@
 
         <!-- Стили виджетов -->
         <item name="materialButtonStyle">@style/Widget.OpenFashion.Button</item>
+        <item name="radioButtonStyle">@style/Widget.OpenFashion.RadioButton</item>
         <!-- Заменили materialTextInputStyle на textInputStyle -->
         <item name="textInputStyle">@style/Widget.OpenFashion.TextInputLayout</item>
     </style>
@@ -75,6 +77,7 @@
         <item name="android:fontFamily">@font/tenor_sans</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/text2</item>
+        <item name="android:lineHeight">16sp</item>
     </style>
     <style name="TextAppearance.OpenFashion.TextError" parent="TextAppearance.OpenFashion.Body.Medium">
         <item name="android:textColor">@color/colorError</item>
@@ -119,14 +122,18 @@
 
     <!-- Кнопка -->
     <style name="Widget.OpenFashion.Button" parent="Widget.MaterialComponents.Button">
-        <item name="backgroundTint">@color/TitleActive</item>
-        <item name="android:paddingVertical">14dp</item>
+        <item name="android:paddingVertical">16dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
         <item name="android:fontFamily">@font/tenor_sans</item>
         <item name="cornerRadius">0dp</item>
         <item name="android:clipToOutline">true</item>
         <item name="android:gravity">center</item>
         <item name="android:textAllCaps">true</item>
         <item name="shapeAppearance">@style/Shape.OpenFashion.MediumComponent</item>
+
+        <item name="backgroundTint">@color/button_background_selector</item>
+        <item name="android:textColor">@color/button_text_selector</item>
     </style>
 
     <style name="Widget.OpenFashion.TransparentButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
@@ -134,12 +141,29 @@
         <item name="android:textColor">@color/TitleActive</item>
         <item name="cornerRadius">0dp</item>
         <item name="strokeWidth">1.3dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
         <item name="strokeColor">@color/GrayScale</item>
         <item name="android:buttonCornerRadius">0dp</item>
         <item name="android:gravity">center</item>
         <item name="android:clipToOutline">true</item>
         <item name="android:paddingVertical">13dp</item>
         <item name="shapeAppearance">@style/Shape.OpenFashion.MediumComponent</item>
+    </style>
+
+    <style name="Widget.OpenFashion.RadioButton" parent="Widget.Material3.CompoundButton.RadioButton">
+        <item name="android:fontFamily">@font/tenor_sans</item>
+        <item name="android:textColor">@color/togge_button_text</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:clipToOutline">true</item>
+        <item name="shapeAppearance">@style/Shape.OpenFashion.MediumComponent</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/toggle_button_background</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginStart">4dp</item>
     </style>
 
     <!-- TextInputLayout -->

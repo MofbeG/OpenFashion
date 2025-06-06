@@ -1,7 +1,10 @@
 package com.sigma.openfashion.ui.auth;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -10,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import android.text.TextWatcher;
+import android.text.Editable;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -18,6 +23,7 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.utils.SwipeGestureListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,11 +41,32 @@ public class AuthFragment extends Fragment {
     private SupabaseService supabaseService;
     private SharedPrefHelper prefs;
 
+    private GestureDetector gestureDetector;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_auth, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_auth, container, false);
+
+        gestureDetector = new GestureDetector(requireContext(), new SwipeGestureListener() {
+            @Override
+            public void onSwipeRight() {
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                navigateToSignUpFragment();
+            }
+        });
+
+        view.setOnTouchListener((v, event) -> {
+            gestureDetector.onTouchEvent(event);
+            return true;
+        });
+
+        return view;
     }
 
     @Override
@@ -57,10 +84,9 @@ public class AuthFragment extends Fragment {
         prefs           = SharedPrefHelper.getInstance(requireContext());
 
         signInButton.setOnClickListener(v -> attemptSignIn());
-        view.findViewById(R.id.linearLayoutOnClick).setOnClickListener(v ->
-                NavHostFragment.findNavController(AuthFragment.this)
-                        .navigate(R.id.action_auth_to_signUp)
-        );
+        view.findViewById(R.id.linearLayoutOnClick).setOnClickListener(v -> {
+            navigateToSignUpFragment();
+        });
         forgotPasswordText.setOnClickListener(v ->
                 NavHostFragment.findNavController(AuthFragment.this)
                         .navigate(R.id.action_auth_to_passwordRecovery)
@@ -75,6 +101,30 @@ public class AuthFragment extends Fragment {
         String email = prefs.getUserEmail();
         if (email != null && !email.isEmpty())
             emailEditText.setText(email);
+
+        // Следим за изменением текста
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Проверяем все поля
+                boolean allFilled = !emailEditText.getText().toString().trim().isEmpty()
+                        && !passwordEditText.getText().toString().trim().isEmpty();
+
+                signInButton.setEnabled(allFilled);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        };
+
+        signInButton.setEnabled(false);
+
+        // Назначаем слушатель на поля
+        emailEditText.addTextChangedListener(watcher);
+        passwordEditText.addTextChangedListener(watcher);
     }
 
     private void attemptSignIn() {
@@ -185,5 +235,10 @@ public class AuthFragment extends Fragment {
         if (getActivity() != null) {
             getActivity().runOnUiThread(block);
         }
+    }
+
+    private void navigateToSignUpFragment() {
+        NavHostFragment.findNavController(AuthFragment.this)
+                .navigate(R.id.action_auth_to_signUp);
     }
 }

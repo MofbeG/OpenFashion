@@ -106,7 +106,7 @@
 
     <!-- Email -->
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="55dp"
         android:id="@+id/emailInputLayout"
         style="@style/Widget.OpenFashion.TextInputLayout"
         android:layout_width="0dp"
@@ -151,6 +151,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Sign_in"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

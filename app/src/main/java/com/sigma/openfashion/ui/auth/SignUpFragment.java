@@ -2,11 +2,15 @@
 
 package com.sigma.openfashion.ui.auth;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,7 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.utils.SwipeGestureListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,11 +48,31 @@ public class SignUpFragment extends Fragment {
     private SupabaseService supabaseService;
     private SharedPrefHelper prefs;
 
+    private GestureDetector gestureDetector;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+
+        gestureDetector = new GestureDetector(requireContext(), new SwipeGestureListener() {
+            @Override
+            public void onSwipeRight() {
+                navigateToAuthFragment();
+            }
+
+            @Override
+            public void onSwipeLeft() {
+            }
+        });
+
+        view.setOnTouchListener((v, event) -> {
+            gestureDetector.onTouchEvent(event);
+            return true;
+        });
+        return view;
     }
 
     @Override
@@ -72,6 +97,37 @@ public class SignUpFragment extends Fragment {
                     .navigate(R.id.action_signUp_to_auth);
         });
 
+        // Следим за изменением текста
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Проверяем все поля
+                boolean allFilled = !emailEditText.getText().toString().trim().isEmpty()
+                        && !nameEditText.getText().toString().trim().isEmpty()
+                        && !signUpAddressEditText.getText().toString().trim().isEmpty()
+                        && !signUpPhoneEditText.getText().toString().trim().isEmpty()
+                        && !passwordEditText.getText().toString().trim().isEmpty()
+                        && !confirmPasswordEditText.getText().toString().trim().isEmpty();
+
+                createAccountButton.setEnabled(allFilled);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        };
+
+        // Назначаем слушатель на поля
+        emailEditText.addTextChangedListener(watcher);
+        nameEditText.addTextChangedListener(watcher);
+        signUpAddressEditText.addTextChangedListener(watcher);
+        signUpPhoneEditText.addTextChangedListener(watcher);
+        passwordEditText.addTextChangedListener(watcher);
+        confirmPasswordEditText.addTextChangedListener(watcher);
+
+        createAccountButton.setEnabled(false);
         createAccountButton.setOnClickListener(v -> attemptSignUp());
     }
 
@@ -186,8 +242,7 @@ public class SignUpFragment extends Fragment {
                     errorText.setVisibility(View.VISIBLE);
                     createAccountButton.setText(getString(R.string.Back));
                     createAccountButton.setOnClickListener(v -> {
-                        NavHostFragment.findNavController(SignUpFragment.this)
-                                .navigate(R.id.action_signUp_to_auth);
+                        navigateToAuthFragment();
                     });
                 }
             } catch (JSONException e) {
@@ -217,5 +272,10 @@ public class SignUpFragment extends Fragment {
         if (getActivity() != null) {
             getActivity().runOnUiThread(block);
         }
+    }
+
+    private void navigateToAuthFragment() {
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_signUp_to_auth);
     }
 }

@@ -1,0 +1,34 @@
+<!-- res/drawable/radio_center_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Disabled -->
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/Input_Background"/>
+            <corners android:radius="360dp"/>
+            <stroke
+                android:width="1dp"
+                android:color="@color/GrayScale"/>
+        </shape>
+    </item>
+
+    <!-- Checked -->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/Body"/>
+            <corners android:radius="360dp"/>
+        </shape>
+    </item>
+
+    <!-- Default -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent"/>
+            <corners android:radius="360dp"/>
+            <stroke
+                android:width="1dp"
+                android:color="@color/GrayScale"/>
+        </shape>
+    </item>
+
+</selector>

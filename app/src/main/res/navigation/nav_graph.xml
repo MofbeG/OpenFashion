@@ -43,7 +43,11 @@
             android:id="@+id/action_onboarding_to_auth"
             app:destination="@id/authFragment"
             app:popUpTo="@id/onboardingFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <!-- Auth -->
@@ -54,7 +58,11 @@
         tools:layout="@layout/fragment_auth">
         <action
             android:id="@+id/action_auth_to_signUp"
-            app:destination="@id/signUpFragment" />
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_auth_to_passwordRecovery"
             app:destination="@id/passwordRecoveryFragment" />
@@ -91,7 +99,11 @@
             app:destination="@id/pinEntryFragment" />
         <action
             android:id="@+id/action_signUp_to_auth"
-            app:destination="@id/authFragment" />
+            app:destination="@id/authFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"/>
     </fragment>
 
     <!-- Password Recovery (ввод email) -->
@@ -148,6 +160,28 @@
         android:id="@+id/homeFragment"
         android:name="com.sigma.openfashion.ui.home.HomeFragment"
         android:label="Главная"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_product"
+            app:destination="@id/productFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.sigma.openfashion.ui.product.ProductFragment"
+        android:label="Product"
+        tools:layout="@layout/fragment_product">
+        <action
+            android:id="@+id/action_product_to_home"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"/>
+    </fragment>
 
 </navigation>

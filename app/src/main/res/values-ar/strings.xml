@@ -65,10 +65,11 @@
     <string name="first_name">الاسم</string>
     <string name="register_terms">
         بالنقر فوق تسجيل الآن، فإنك توافق على
-        <a href="https://yourwebsite.com/terms">شروط الشروط </a> و
-        <a href="https://yourwebsite.com/privacy">سياسة الخصوصية</a>.
+        <a href="https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/kall//terms">شروط الشروط </a> و
+        <a href="https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/kall//privacy">سياسة الخصوصية</a>.
     </string>
     <string name="sign_in_to_speed_up_the_checkout_nprocess_and_manage_your_orders">سجِّل الدخول لتسريع عملية السداد وإدارة طلباتك</string>
     <string name="have_an_account">هل لديك حساب؟</string>
     <string name="or">أو</string>
+    <string name="Start">ابدأ</string>
 </resources>

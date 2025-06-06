@@ -66,4 +66,10 @@ dependencies {
 
     // Палетка
     implementation("androidx.palette:palette:1.0.0")
+
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
+    // локальное кеширование
+    implementation("androidx.room:room-runtime:2.7.1")
+    annotationProcessor("androidx.room:room-compiler:2.7.1")
 }

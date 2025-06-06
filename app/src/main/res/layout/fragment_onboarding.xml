@@ -6,24 +6,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Простой набор из 2–3 экранов, здесь покажем заголовок и кнопку “Далее” -->
-    <TextView
-        android:id="@+id/onboardingText"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Добро пожаловать в Open Fashion!\nСвайпните, чтобы узнать больше."
-        android:textAppearance="@style/TextAppearance.OpenFashion.Body.Medium"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        android:paddingVertical="@dimen/paddingVerticalMainLayout"
+        android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
+        app:layout_constraintBottom_toTopOf="@+id/onboardingNextButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- “Далее” -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/onboardingNextButton"
         style="@style/Widget.OpenFashion.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Next"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -65,10 +65,11 @@
     <string name="new_to">You\'re new?</string>
     <string name="register_terms">
         By clicking Register Now, you agree to our
-        <a href="https://yourwebsite.com/terms">Term  Conditions</a> and
-        <a href="https://yourwebsite.com/privacy">Privacy  Policy</a>.
+        <a href="https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/kall//terms">Term  Conditions</a> and
+        <a href="https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/kall//privacy">Privacy  Policy</a>.
     </string>
     <string name="sign_in_to_speed_up_the_checkout_nprocess_and_manage_your_orders">Log in to speed up the checkout process and manage your orders</string>
     <string name="have_an_account">Have an account?</string>
     <string name="or">Or</string>
+    <string name="Start">Start</string>
 </resources>

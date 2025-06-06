@@ -113,7 +113,7 @@ public class SplashFragment extends Fragment {
             @Override
             public void onSuccess(String jsonResponse) {
                 new Handler(Looper.getMainLooper())
-                        .postDelayed(SplashFragment.this::loadCategories, NEXT_STEP_DELAY);
+                        .postDelayed(SplashFragment.this::checkSession, NEXT_STEP_DELAY);
             }
 
             @Override
@@ -126,28 +126,7 @@ public class SplashFragment extends Fragment {
         });
     }
 
-    /** Этап 3: Загрузка категорий (или других стартовых данных) */
-    private void loadCategories() {
-        runOnUi(() -> setStatus(getString(R.string.Data_Loading)));
-
-        supabaseService.getCategories(new SupabaseService.QueryCallback() {
-            @Override
-            public void onSuccess(String jsonResponse) {
-                new Handler(Looper.getMainLooper())
-                        .postDelayed(SplashFragment.this::checkSession, NEXT_STEP_DELAY);
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                runOnUi(() -> {
-                    setStatus(getString(R.string.Data_loading_error));
-                    showRetryButton();
-                });
-            }
-        });
-    }
-
-    /** Этап 4: Проверка сессии (JWT + PIN или Onboarding) */
+    /** Этап 3: Проверка сессии (JWT + PIN или Onboarding) */
     private void checkSession() {
         runOnUi(() -> setStatus(getString(R.string.Checking_in_on_the_session)));
 

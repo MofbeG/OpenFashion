@@ -1,0 +1,18 @@
+<!-- res/drawable/radio_center_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Состояние disabled (отключённая кнопка) -->
+    <item
+        android:state_enabled="false"
+        android:color="@color/Placeholder" />
+
+    <!-- Состояние checked (выбранная) -->
+    <item
+        android:state_checked="true"
+        android:color="@color/white" />
+
+    <!-- Состояние default (не выбрана, включена) -->
+    <item
+        android:color="@color/TitleActive" />
+
+</selector>

@@ -4,9 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/splashRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
-    android:paddingVertical="@dimen/paddingVerticalMainLayout">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/splashLogo"
@@ -36,6 +34,8 @@
         style="@style/Widget.OpenFashion.progressBarHorizontal"
         android:layout_width="match_parent"
         android:indeterminate="true"
+        android:visibility="visible"
+        android:layout_marginBottom="16dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/actionButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,9 +45,9 @@
         android:id="@+id/actionButton"
         style="@style/Widget.OpenFashion.Button"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="24dp"
+        android:layout_height="wrap_content"
         android:visibility="gone"
+        android:text="@string/Repeat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>

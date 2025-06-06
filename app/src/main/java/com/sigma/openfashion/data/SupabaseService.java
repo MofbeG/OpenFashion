@@ -328,7 +328,18 @@ public class SupabaseService {
     /** Получить все категории. */
     public void getCategories(QueryCallback callback) {
         String url = SUPABASE_URL + "/rest/v1/categories?select=*";
-        Log.d(TAG, "getCategories URL: " + url);
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .headers(getCommonHeaders())
+                .build();
+        logRequest(request);
+        client.newCall(request).enqueue(openCallback(callback));
+    }
+
+    public void getCategoryById(int id, QueryCallback callback) {
+        String url = String.format(Locale.US,
+                SUPABASE_URL + "/rest/v1/categories?id=eq.%d&select=*", id);
         Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -340,29 +351,72 @@ public class SupabaseService {
 
     /* ==================== PRODUCTS ==================== */
 
-    /** Получить все товары. */
-    public void getAllProducts(QueryCallback callback) {
-        String url = SUPABASE_URL + "/rest/v1/products?select=*";
-        Log.d(TAG, "getAllProducts URL: " + url);
+    /**
+     * Получить товары с возможностью фильтрации по категории и постраничной загрузкой.
+     *
+     * @param categoryId ID категории (или -1 если не фильтровать)
+     * @param limit Кол-во товаров на странице
+     * @param offset Смещение для постраничной загрузки
+     * @param callback Обработчик результата
+     */
+    public void getProducts(Integer categoryId, Integer limit, Integer offset, QueryCallback callback) {
+        StringBuilder urlBuilder = new StringBuilder(SUPABASE_URL + "/rest/v1/products?select=*");
+
+        if (categoryId != null && categoryId >= 0) {
+            urlBuilder.append("&category_id=eq.").append(categoryId);
+        }
+
+        if (limit != null) {
+            urlBuilder.append("&limit=").append(limit);
+        }
+
+        if (offset != null) {
+            urlBuilder.append("&offset=").append(offset);
+        }
+
+        String url = urlBuilder.toString();
+
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .headers(getCommonHeaders())
                 .build();
+
         logRequest(request);
         client.newCall(request).enqueue(openCallback(callback));
     }
 
-    /** Получить товары по категории. */
-    public void getProductsByCategory(int categoryId, QueryCallback callback) {
-        String url = String.format(Locale.US,
-                SUPABASE_URL + "/rest/v1/products?category_id=eq.%d&select=*", categoryId);
-        Log.d(TAG, "getProductsByCategory URL: " + url);
+    /**
+     * Получить список товаров с превью (id, name, price, preview_image).
+     *
+     * @param categoryId ID категории (или null если не фильтровать)
+     * @param limit Кол-во товаров (можно null)
+     * @param offset Смещение (можно null)
+     * @param callback Обработчик результата
+     */
+    public void getProductsPreview(Integer categoryId, Integer limit, Integer offset, QueryCallback callback) {
+        StringBuilder urlBuilder = new StringBuilder(SUPABASE_URL + "/rest/v1/products?select=id,category_id,gender,name,price,currency,preview_image_url");
+
+        if (categoryId != null && categoryId >= 0) {
+            urlBuilder.append("&category_id=eq.").append(categoryId);
+        }
+
+        if (limit != null) {
+            urlBuilder.append("&limit=").append(limit);
+        }
+
+        if (offset != null) {
+            urlBuilder.append("&offset=").append(offset);
+        }
+
+        String url = urlBuilder.toString();
+
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .headers(getCommonHeaders())
                 .build();
+
         logRequest(request);
         client.newCall(request).enqueue(openCallback(callback));
     }
@@ -371,7 +425,19 @@ public class SupabaseService {
     public void getProduct(int productId, QueryCallback callback) {
         String url = String.format(Locale.US,
                 SUPABASE_URL + "/rest/v1/products?id=eq.%d&select=*", productId);
-        Log.d(TAG, "getProduct URL: " + url);
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .headers(getCommonHeaders())
+                .build();
+        logRequest(request);
+        client.newCall(request).enqueue(openCallback(callback));
+    }
+
+    /** Получить изображения по товар ID. */
+    public void getProductImages(int productId, QueryCallback callback) {
+        String url = String.format(Locale.US,
+                SUPABASE_URL + "/rest/v1/product_images?product_id=eq.%d&select=image_url", productId);
         Request request = new Request.Builder()
                 .url(url)
                 .get()
