@@ -3,4 +3,5 @@
     <dimen name="paddingVerticalMainLayout">20dp</dimen>
     <dimen name="paddingHorizontalMainLayout">15dp</dimen>
     <dimen name="PinDot">19dp</dimen>
+    <dimen name="margin_header">70dp</dimen>
 </resources>

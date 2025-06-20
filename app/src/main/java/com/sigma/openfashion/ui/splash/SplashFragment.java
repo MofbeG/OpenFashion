@@ -18,7 +18,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +31,7 @@ import org.json.JSONObject;
  * 3. загрузка начальных данных (категорий)
  * 4. сессия (JWT + PIN или Onboarding)
  */
-public class SplashFragment extends Fragment {
+public class SplashFragment extends BaseFragment {
 
     private static final long LOGO_ANIM_DURATION = 600; // мс
     private static final long NEXT_STEP_DELAY     = 300; // мс
@@ -188,7 +190,19 @@ public class SplashFragment extends Fragment {
                     if (jsonResponse.trim().equals("[]")) {
                         runOnUi(() -> navigateToRegWithMessage());
                     } else {
-                        runOnUi(() -> navigateToPinEntry());
+                        try {
+                            JSONArray array = new JSONArray(jsonResponse);
+                            JSONObject obj = array.getJSONObject(0);
+                            String first_name   = obj.optString("first_name", null);
+                            String last_name = obj.optString("last_name", null);
+
+                            prefs.saveKeyUserFirstName(first_name);
+                            prefs.saveKeyUserLastName(last_name);
+                            runOnUi(() -> navigateToPinEntry());
+                        } catch (JSONException e) {
+                            setStatus(getString(R.string.Parse_Error) + e.getMessage());
+                            showRetryButton();
+                        }
                     }
                 }
                 @Override
@@ -250,12 +264,5 @@ public class SplashFragment extends Fragment {
     /** Установить текст статуса */
     private void setStatus(String text) {
         statusText.setText(text);
-    }
-
-    /** Безопасный вызов UI‑операции из любого потока */
-    private void runOnUi(Runnable block) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(block);
-        }
     }
 }

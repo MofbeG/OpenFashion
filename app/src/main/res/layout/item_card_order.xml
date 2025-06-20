@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
+
+    <ImageView
+        android:id="@+id/imageViewPreview"
+        android:layout_width="100dp"
+        android:layout_height="134dp"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        android:src="@color/Input_Background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageViewPreview"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            style="@style/TextAppearance.OpenFashion.SubTitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:lineHeight="20dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:text="weffwewfeeeeeeeeeeeeeeeeee" />
+
+        <TextView
+            android:id="@+id/textViewBody"
+            style="@style/TextAppearance.OpenFashion.Body.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:lineHeight="18dp"
+            android:gravity="left"
+            android:text="Recycle Boucle Knit Cardigan Pinkeeeeeeeeeeeeeeee" />
+
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/buttonMinus"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/toggle_button_background_fill"
+                android:backgroundTint="@color/Input_Background"
+                android:src="@drawable/minus"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewCount"
+                style="@style/TextAppearance.OpenFashion.Body.Medium"
+                android:layout_marginHorizontal="10dp"
+                android:text="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageButton
+                android:id="@+id/buttonPlus"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/toggle_button_background_fill"
+                android:backgroundTint="@color/Input_Background"
+                android:src="@drawable/plus"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@color/Label" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewPrice"
+            style="@style/TextAppearance.OpenFashion.Body.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="left"
+            android:text="1200 RUB"
+            android:textColor="@color/Secondary" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/textViewPrice1"
+            style="@style/TextAppearance.OpenFashion.Body.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="left"
+            android:text="1200 RUB / ед"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

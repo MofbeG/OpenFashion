@@ -23,6 +23,8 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
 import com.sigma.openfashion.ui.utils.SwipeGestureListener;
 
 import org.json.JSONException;
@@ -31,7 +33,7 @@ import org.json.JSONObject;
 /**
  * Экран входа пользователя.
  */
-public class AuthFragment extends Fragment {
+public class AuthFragment extends BaseFragment {
 
     private TextInputEditText emailEditText, passwordEditText;
     private MaterialButton signInButton, signInEmailButton;
@@ -42,6 +44,18 @@ public class AuthFragment extends Fragment {
     private SharedPrefHelper prefs;
 
     private GestureDetector gestureDetector;
+
+    public AuthFragment() {
+        super(R.layout.fragment_auth);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(true);
+        setupHeader(HeaderConfig.LOGO_ONLY);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -175,6 +189,7 @@ public class AuthFragment extends Fragment {
                     prefs.saveRefreshToken(refresh_token);
                     prefs.saveUserId(userId);
                     prefs.saveUserPin(null);
+                    prefs.saveUserEmail(userObj.optString("email", null));
                     showProgress(false);
 
                     supabaseService.setJwtToken(accessToken);
@@ -229,12 +244,6 @@ public class AuthFragment extends Fragment {
     private void navigateToPinEntry() {
         NavHostFragment.findNavController(AuthFragment.this)
                 .navigate(R.id.action_auth_to_pin);
-    }
-
-    private void runOnUi(Runnable block) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(block);
-        }
     }
 
     private void navigateToSignUpFragment() {

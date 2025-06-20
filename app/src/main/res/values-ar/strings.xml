@@ -72,4 +72,24 @@
     <string name="have_an_account">هل لديك حساب؟</string>
     <string name="or">أو</string>
     <string name="Start">ابدأ</string>
+    <string name="show_all">عرض الكل</string>
+    <string name="new_arrival">وصول جديد</string>
+    <string name="man">ذكر</string>
+    <string name="female">المرأة</string>
+    <string name="unisex">للجنسين</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="settings">الإعدادات</string>
+    <string name="View_all">عرض الكل</string>
+    <string name="clothes">الملابس</string>
+    <string name="order">النظام</string>
+    <string name="basket">سلة</string>
+    <string name="apply">تطبيق</string>
+    <string name="sucress">النجاح</string>
+    <string name="Apparel">ملابس</string>
+    <string name="Checkout">الخروج</string>
+    <string name="add_to_basket">أضف إلى السلة</string>
+    <string name="remove_basket">أخرجه من السلة</string>
+    <string name="Loading">تحميل</string>
+    <string name="Your_shopping_cart_is_empty">سلة التسوق الخاصة بك فارغة</string>
+    <string name="est_total">المبلغ الإجمالي</string>
 </resources>

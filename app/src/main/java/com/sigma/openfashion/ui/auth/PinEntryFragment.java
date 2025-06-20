@@ -25,6 +25,8 @@ import com.google.android.material.textview.MaterialTextView;
 import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ import java.util.List;
 /**
  * PinEntryFragment: ввод и установка PIN‑кода.
  */
-public class PinEntryFragment extends Fragment {
+public class PinEntryFragment extends BaseFragment {
     private TextView pinTitle;
     private MaterialTextView errorText, exitText;
     private ProgressBar pinProgress;
@@ -47,6 +49,17 @@ public class PinEntryFragment extends Fragment {
     private SharedPrefHelper prefs;
     private String tempPin;
     private int count;
+
+    public PinEntryFragment() {
+        super(R.layout.fragment_pin_entry);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(true);
+        setupHeader(HeaderConfig.LOGO_ONLY);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

@@ -8,6 +8,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.sigma.openfashion.data.product.Gender;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -237,7 +239,7 @@ public class SupabaseService {
         RequestBody body = RequestBody.create(json.toString(), JSON);
         Request request = new Request.Builder()
                 .url(url)
-                .patch(body)
+                .put(body)
                 .headers(getAuthHeaders())
                 .build();
         logRequest(request);
@@ -282,7 +284,6 @@ public class SupabaseService {
     public void getProfile(String userId, QueryCallback callback) {
         String url = String.format(Locale.US,
                 SUPABASE_URL + "/rest/v1/profiles?id=eq.%s&select=*", userId);
-        Log.d(TAG, "getProfile URL: " + url);
         Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -387,18 +388,23 @@ public class SupabaseService {
     }
 
     /**
-     * Получить список товаров с превью (id, name, price, preview_image).
+     * Получить список товаров с превью (id, category_id, gender, name, price, currency, preview_image).
      *
      * @param categoryId ID категории (или null если не фильтровать)
+     * @param gender Гендер male, female, unisex (или null если не фильтровать)
      * @param limit Кол-во товаров (можно null)
      * @param offset Смещение (можно null)
      * @param callback Обработчик результата
      */
-    public void getProductsPreview(Integer categoryId, Integer limit, Integer offset, QueryCallback callback) {
+    public void getProductsPreview(Integer categoryId, Gender gender, Integer limit, Integer offset, QueryCallback callback) {
         StringBuilder urlBuilder = new StringBuilder(SUPABASE_URL + "/rest/v1/products?select=id,category_id,gender,name,price,currency,preview_image_url");
 
         if (categoryId != null && categoryId >= 0) {
             urlBuilder.append("&category_id=eq.").append(categoryId);
+        }
+
+        if (gender != null) {
+            urlBuilder.append("&gender=eq.").append(gender.name().toLowerCase());
         }
 
         if (limit != null) {
@@ -419,6 +425,87 @@ public class SupabaseService {
 
         logRequest(request);
         client.newCall(request).enqueue(openCallback(callback));
+    }
+
+    public void getProductsPreviewWithCount(
+            Integer categoryId,
+            Gender gender,
+            Integer limit,
+            Integer offset,
+            QueryCallbackWithCount callback
+    ) {
+        StringBuilder urlBuilder = new StringBuilder(SUPABASE_URL + "/rest/v1/products?select=id,category_id,gender,name,price,currency,preview_image_url");
+
+
+        if (categoryId != null && categoryId >= 0) {
+            urlBuilder.append("&category_id=eq.").append(categoryId);
+        }
+
+        if (gender != null) {
+            urlBuilder.append("&gender=eq.").append(gender.name().toLowerCase());
+        }
+
+        if (limit != null) {
+            urlBuilder.append("&limit=").append(limit);
+        }
+
+        if (offset != null) {
+            urlBuilder.append("&offset=").append(offset);
+        }
+
+        String url = urlBuilder.toString();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .headers(getCommonHeaders())
+                .addHeader("Prefer", "count=exact")
+                .build();
+
+        logRequest(request);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onError(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                try (response) {
+                    if (response.isSuccessful()) {
+                        String json = response.body().string();
+                        Log.d(TAG, "Response body: " + json);
+                        int totalCount = 0;
+
+                        // Извлекаем общее количество из заголовка
+                        String contentRange = response.header("Content-Range");
+                        if (contentRange != null) {
+                            String[] parts = contentRange.split("/");
+                            if (parts.length > 1) {
+                                try {
+                                    totalCount = Integer.parseInt(parts[1]);
+                                } catch (NumberFormatException e) {
+                                    // Оставляем 0
+                                }
+                            }
+                        }
+
+                        callback.onSuccess(json, totalCount);
+                    } else {
+                        callback.onError(response.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Error reading response: " + e.getMessage());
+                    callback.onError(e.getMessage());
+                }
+
+            }
+        });
+    }
+
+    public interface QueryCallbackWithCount {
+        void onSuccess(String jsonResponse, int totalCount);
+        void onError(String errorMessage);
     }
 
     /** Получить один товар по ID. */
@@ -452,13 +539,38 @@ public class SupabaseService {
     /** Получить все элементы корзины для пользователя. */
     public void getCartItems(String userId, QueryCallback callback) {
         String url = String.format(Locale.US,
-                SUPABASE_URL + "/rest/v1/cart_items?user_id=eq.%s&select=*", userId);
-        Log.d(TAG, "getCartItems URL: " + url);
+                SUPABASE_URL + "/rest/v1/cart_items?user_id=eq.%s&select=*,product:products(id,name,price,currency,preview_image_url)", userId);
+
         Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .headers(getAuthHeaders())
                 .build();
+
+        logRequest(request);
+        client.newCall(request).enqueue(openCallback(callback));
+    }
+
+    /** Получить все элементы корзины для пользователя. */
+    public void isExistCartItem(String userId, int productId,
+                                String selectedSize, String selectedColor,
+                                QueryCallback callback) {
+        // Добавляем все условия в URL как параметры фильтрации
+        String url = String.format(Locale.US,
+                SUPABASE_URL + "/rest/v1/cart_items?" +
+                        "user_id=eq.%s&" +
+                        "product_id=eq.%d&" +
+                        "selected_size=eq.%s&" +
+                        "selected_color=eq.%s&" +
+                        "select=*",
+                userId, productId, selectedSize, selectedColor);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .headers(getAuthHeaders())
+                .build();
+
         logRequest(request);
         client.newCall(request).enqueue(openCallback(callback));
     }
@@ -481,7 +593,6 @@ public class SupabaseService {
             return;
         }
         String bodyStr = json.toString();
-        Log.d(TAG, "addCartItem payload: " + bodyStr);
         RequestBody body = RequestBody.create(bodyStr, JSON);
         Request request = new Request.Builder()
                 .url(url)
@@ -673,6 +784,7 @@ public class SupabaseService {
                 .add("Accept", "application/json");
         if (jwtToken != null && !jwtToken.isEmpty()) {
             builder.add("Authorization", "Bearer " + jwtToken);
+            builder.add("Content-Type", "application/json");
         }
         Headers headers = builder.build();
         Log.d(TAG, "Auth headers: " + headers);

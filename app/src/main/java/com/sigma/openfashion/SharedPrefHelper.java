@@ -7,12 +7,14 @@ import androidx.annotation.Nullable;
 
 public class SharedPrefHelper {
 
-    private static final String PREF_NAME      = "com.sigma.openfashion.PREFS";
-    private static final String KEY_JWT        = "KEY_JWT";
-    private static final String KEY_REFRESH    = "KEY_REFRESH";
-    private static final String KEY_USER_ID    = "KEY_USER_ID";
-    private static final String KEY_USER_EMAIL = "KEY_USER_EMAIL";
-    private static final String KEY_USER_PIN   = "KEY_USER_PIN";
+    private static final String PREF_NAME           = "com.sigma.openfashion.PREFS";
+    private static final String KEY_JWT             = "KEY_JWT";
+    private static final String KEY_REFRESH         = "KEY_REFRESH";
+    private static final String KEY_USER_ID         = "KEY_USER_ID";
+    private static final String KEY_USER_FIRST_NAME = "KEY_USER_FIRST_NAME";
+    private static final String KEY_USER_LAST_NAME  = "KEY_USER_LAST_NAME";
+    private static final String KEY_USER_EMAIL      = "KEY_USER_EMAIL";
+    private static final String KEY_USER_PIN        = "KEY_USER_PIN";
 
     private static SharedPrefHelper instance;
     private final SharedPreferences prefs;
@@ -81,5 +83,20 @@ public class SharedPrefHelper {
 
     public void clearAll() {
         prefs.edit().clear().apply();
+    }
+
+    @Nullable
+    public String getKeyUserFirstName() {
+        return prefs.getString(KEY_USER_FIRST_NAME, null);
+    }
+    public void saveKeyUserFirstName(String userId) {
+        prefs.edit().putString(KEY_USER_FIRST_NAME, userId).apply();
+    }
+    @Nullable
+    public String getKeyUserLastName() {
+        return prefs.getString(KEY_USER_LAST_NAME, null);
+    }
+    public void saveKeyUserLastName(String userId) {
+        prefs.edit().putString(KEY_USER_LAST_NAME, userId).apply();
     }
 }

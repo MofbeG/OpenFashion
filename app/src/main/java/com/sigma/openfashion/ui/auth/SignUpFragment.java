@@ -28,6 +28,8 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
 import com.sigma.openfashion.ui.utils.SwipeGestureListener;
 
 import org.json.JSONException;
@@ -36,10 +38,7 @@ import org.json.JSONObject;
 /**
  * SignUpFragment: экран регистрации пользователя.
  */
-public class SignUpFragment extends Fragment {
-
-    private static final String TAG = "SignUpFragment";
-
+public class SignUpFragment extends BaseFragment {
     private TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText, nameEditText, lastnameEditText, signUpAddressEditText, signUpPhoneEditText;
     private MaterialButton createAccountButton;
     private MaterialTextView errorText;
@@ -49,6 +48,18 @@ public class SignUpFragment extends Fragment {
     private SharedPrefHelper prefs;
 
     private GestureDetector gestureDetector;
+
+    public SignUpFragment() {
+        super(R.layout.fragment_sign_up);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(true);
+        setupHeader(HeaderConfig.LOGO_ONLY);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -220,6 +231,8 @@ public class SignUpFragment extends Fragment {
                     prefs.saveJwtToken(access_token);
                     prefs.saveUserId(id);
                     prefs.saveUserEmail(email);
+                    prefs.saveKeyUserFirstName(first_name);
+                    prefs.saveKeyUserLastName(last_name);
 
                     supabaseService.setJwtToken(access_token);
                     supabaseService.upsertProfile(id, first_name, last_name, email, phone, adress, new SupabaseService.QueryCallback() {
@@ -266,12 +279,6 @@ public class SignUpFragment extends Fragment {
 
     private void hideError() {
         runOnUi(() -> errorText.setVisibility(View.GONE));
-    }
-
-    private void runOnUi(Runnable block) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(block);
-        }
     }
 
     private void navigateToAuthFragment() {

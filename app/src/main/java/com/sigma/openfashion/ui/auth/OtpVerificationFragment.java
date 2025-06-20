@@ -19,6 +19,8 @@ import com.google.android.material.textview.MaterialTextView;
 import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +28,7 @@ import org.json.JSONObject;
 /**
  * OtpVerificationFragment: ввод и проверка OTP‑кода.
  */
-public class OtpVerificationFragment extends Fragment {
+public class OtpVerificationFragment extends BaseFragment {
 
     private TextInputEditText otpEditText;
     private MaterialButton verifyOtpButton;
@@ -37,6 +39,17 @@ public class OtpVerificationFragment extends Fragment {
     private boolean isAuthEmail;
     private String email;
     private SharedPrefHelper prefs;
+
+    public OtpVerificationFragment() {
+        super(R.layout.fragment_otp_verification);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(true);
+        setupHeader(HeaderConfig.BUTTON_BACK);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

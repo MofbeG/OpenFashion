@@ -20,11 +20,13 @@ import com.google.android.material.textview.MaterialTextView;
 import com.sigma.openfashion.R;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
 
 /**
  * PasswordRecoveryFragment: ввод email для получения OTP‑кода.
  */
-public class PasswordRecoveryFragment extends Fragment {
+public class PasswordRecoveryFragment extends BaseFragment {
 
     private TextInputEditText emailEditText;
     private MaterialButton sendOtpButton;
@@ -34,6 +36,17 @@ public class PasswordRecoveryFragment extends Fragment {
 
     private boolean isAuthEmail;
     private SupabaseService supabaseService;
+
+    public PasswordRecoveryFragment() {
+        super(R.layout.fragment_password_recovery);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(true);
+        setupHeader(HeaderConfig.BUTTON_BACK);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

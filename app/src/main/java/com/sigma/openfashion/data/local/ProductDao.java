@@ -11,16 +11,9 @@ import java.util.List;
 @Dao
 public interface ProductDao {
 
-    /**
-     * Вытягивает первые `limit` записей (offset для пагинации),
-     * упорядоченные по id.
-     */
     @Query("SELECT * FROM products ORDER BY id LIMIT :limit OFFSET :offset")
     List<ProductEntity> getProductsPreview(int limit, int offset);
 
-    /**
-     * Сохраняет список: при конфликте (одинаковый id) перезаписываем.
-     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<ProductEntity> products);
 
@@ -29,4 +22,10 @@ public interface ProductDao {
      */
     @Query("DELETE FROM products")
     void clearAll();
+
+    /**
+     * Удаляет продукты по списку ID.
+     */
+    @Query("DELETE FROM products WHERE id IN (:ids)")
+    void deleteByIds(List<Integer> ids);
 }

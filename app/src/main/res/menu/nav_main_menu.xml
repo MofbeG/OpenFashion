@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/user"
+            android:title="@string/profile"/>
+
+        <item
+            android:id="@+id/nav_order"
+            android:icon="@drawable/shopping_bag"
+            android:title="@string/basket"/>
+
+        <!--<item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/installing_updates"
+            android:title="@string/settings"/>!-->
+
+
+    </group>
+    <item
+        android:title="@string/clothes">
+        <menu>
+            <item
+                android:id="@+id/nav_mans"
+                android:title="@string/man"/>
+
+            <item
+                android:id="@+id/nav_woman"
+                android:title="@string/female"/>
+
+            <item
+                android:id="@+id/nav_all"
+                android:title="@string/View_all"/>
+        </menu>
+    </item>
+
+</menu>

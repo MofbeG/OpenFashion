@@ -73,7 +73,7 @@
                         android:paddingHorizontal="36dp"
                         android:paddingTop="25dp"
                         android:paddingBottom="3dp"
-                        android:text="New Arrival"
+                        android:text="@string/new_arrival"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -89,125 +89,125 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!--<LinearLayout
+                android:id="@+id/constaintLayoutTab"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="20dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constaintLayoutTitle">
+
                 <LinearLayout
-                    android:id="@+id/constaintLayoutTab"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_marginTop="20dp"
-                    android:paddingHorizontal="20dp"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:gravity="center"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constaintLayoutTitle">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        style="@style/TextAppearance.OpenFashion.Body.Medium"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-                        <TextView
-                            style="@style/TextAppearance.OpenFashion.Body.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="All"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"/>
+                        android:layout_height="wrap_content"
+                        android:text="All"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                        <ImageView
-                            android:background="@drawable/rectangle_fill"
-                            android:backgroundTint="@color/Secondary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <Space
-                        android:layout_width="42dp"
-                        android:layout_height="match_parent"/>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:gravity="center"
+                    <ImageView
+                        android:background="@drawable/rectangle_fill"
+                        android:backgroundTint="@color/Secondary"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-                        <TextView
-                            style="@style/TextAppearance.OpenFashion.Body.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Apparel"
-                            android:textColor="@color/Placeholder"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteX="40dp" />
-                    </LinearLayout>
-
-                    <Space
-                        android:layout_width="42dp"
-                        android:layout_height="match_parent"/>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-                        <TextView
-                            style="@style/TextAppearance.OpenFashion.Body.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Dress"
-                            android:textColor="@color/Placeholder"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteX="40dp" />
-                    </LinearLayout>
-
-                    <Space
-                        android:layout_width="42dp"
-                        android:layout_height="match_parent"/>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-                        <TextView
-                            style="@style/TextAppearance.OpenFashion.Body.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tshirt"
-                            android:textColor="@color/Placeholder"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteX="40dp" />
-                    </LinearLayout>
-
-                    <Space
-                        android:layout_width="42dp"
-                        android:layout_height="match_parent"/>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-                        <TextView
-                            style="@style/TextAppearance.OpenFashion.Body.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Bag"
-                            android:textColor="@color/Placeholder"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteX="40dp" />
-
-                        <ImageView
-                            android:visibility="gone"
-                            android:background="@drawable/rectangle_fill"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
+
+                <Space
+                    android:layout_width="42dp"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        style="@style/TextAppearance.OpenFashion.Body.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Apparel"
+                        android:textColor="@color/Placeholder"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteX="40dp" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="42dp"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        style="@style/TextAppearance.OpenFashion.Body.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dress"
+                        android:textColor="@color/Placeholder"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteX="40dp" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="42dp"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        style="@style/TextAppearance.OpenFashion.Body.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tshirt"
+                        android:textColor="@color/Placeholder"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteX="40dp" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="42dp"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        style="@style/TextAppearance.OpenFashion.Body.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bag"
+                        android:textColor="@color/Placeholder"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_editor_absoluteX="40dp" />
+
+                    <ImageView
+                        android:visibility="gone"
+                        android:background="@drawable/rectangle_fill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                </LinearLayout>!-->
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/flexboxProducts"
@@ -218,17 +218,18 @@
                     app:flexWrap="wrap"
                     app:justifyContent="center"
                     app:alignItems="center"
-                    app:layout_constraintTop_toBottomOf="@+id/constaintLayoutTab"
+                    app:layout_constraintTop_toBottomOf="@+id/constaintLayoutTitle"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
                 <Button
+                    android:id="@+id/buttonShowAll"
                     android:layout_marginTop="30dp"
                     android:drawableEnd="@drawable/forward_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.OpenFashion.TransparentButton"
-                    android:text="Explore More"
+                    android:text="@string/show_all"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/flexboxProducts" />
@@ -244,76 +245,43 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constaintLayoutNewArrival">
 
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-    </ScrollView>
-
-    <eightbitlab.com.blurview.BlurView
-        android:id="@+id/blurView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/mainTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageButton
-                android:id="@+id/buttonMenu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/menu"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/splashLogo"
-                android:layout_width="wrap_content"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/brand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/logo_open_fashion"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginTop="16dp"
+                android:src="@drawable/collection" />
 
-            <ImageButton
-                android:id="@+id/buttonSearch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@android:string/search_go"
-                android:src="@drawable/search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/buttonOrder"
-                app:layout_constraintTop_toTopOf="parent"/>
+            <ImageView
+                android:layout_marginTop="26dp"
+                android:src="@drawable/trending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-            <ImageButton
-                android:id="@+id/buttonOrder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/shopping_bag"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+            <ImageView
+                android:layout_marginTop="26dp"
+                android:src="@drawable/openfashion"
+                android:layout_width="match_parent"
+                android:layout_height="560dp"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:layout_marginTop="26dp"
+                android:src="@drawable/followus"
+                android:layout_width="match_parent"
+                android:layout_height="560dp"/>
+            <ImageView
+                android:src="@drawable/footer"
+                android:layout_width="match_parent"
+                android:layout_height="560dp"/>
 
-    </eightbitlab.com.blurview.BlurView>
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

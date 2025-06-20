@@ -13,6 +13,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButton;
 import com.sigma.openfashion.R;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
 /**
  * OnboardingFragment: показываем короткую презентацию, затем переходим на Auth.
  */
-public class OnboardingFragment extends Fragment {
+public class OnboardingFragment extends BaseFragment {
 
     private ViewPager2 viewPager;
     private MaterialButton nextButton;
@@ -34,6 +36,12 @@ public class OnboardingFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_onboarding, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(false);
     }
 
     @Override

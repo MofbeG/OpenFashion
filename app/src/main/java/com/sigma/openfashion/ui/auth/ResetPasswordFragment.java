@@ -20,11 +20,17 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * ResetPasswordFragment: ввод нового пароля после проверки OTP.
  */
-public class ResetPasswordFragment extends Fragment {
+public class ResetPasswordFragment extends BaseFragment {
 
     private TextInputEditText newPasswordEditText, confirmNewPasswordEditText;
     private MaterialButton updatePasswordButton;
@@ -34,11 +40,22 @@ public class ResetPasswordFragment extends Fragment {
     private SupabaseService supabaseService;
     private SharedPrefHelper prefs;
 
+    public ResetPasswordFragment() {
+        super(R.layout.fragment_reset_password);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_reset_password, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(true);
+        setupHeader(HeaderConfig.LOGO_ONLY);
     }
 
     @Override
@@ -83,19 +100,25 @@ public class ResetPasswordFragment extends Fragment {
         showProgress(true);
 
         supabaseService.resetPassword(newPass, new SupabaseService.QueryCallback() {
-            @Override public void onSuccess(String jsonResponse) { handleResetSuccess(); }
+            @Override public void onSuccess(String jsonResponse) { handleResetSuccess(jsonResponse); }
             @Override public void onError(String errorMessage) {
                 showError(errorMessage);
             }
         });
     }
 
-    private void handleResetSuccess() {
+    private void handleResetSuccess(String jsonResponse) {
         requireActivity().runOnUiThread(() -> {
-            showProgress(false);
-            prefs.saveUserPin(null);
-            NavHostFragment.findNavController(ResetPasswordFragment.this)
-                    .navigate(R.id.action_resetPassword_to_auth);
+            try {
+                prefs.clearAll();
+                JSONObject obj       = new JSONObject(jsonResponse);
+                prefs.saveUserEmail(obj.getString("email"));
+                showProgress(false);
+                NavHostFragment.findNavController(ResetPasswordFragment.this)
+                        .navigate(R.id.action_resetPassword_to_auth);
+            } catch (JSONException e) {
+                showError(getString(R.string.Parse_Error) + e.getMessage());
+            }
         });
     }
 

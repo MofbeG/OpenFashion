@@ -18,11 +18,12 @@ import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.Validator;
 import com.sigma.openfashion.data.SupabaseService;
+import com.sigma.openfashion.ui.BaseFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AccountRegisterFragment extends Fragment {
+public class AccountRegisterFragment extends BaseFragment {
     private TextInputEditText usernameEditText, signUpAddressEditText, signUpPhoneEditText;
     private MaterialTextView errorText;
     private ProgressBar progressBar;
@@ -30,6 +31,10 @@ public class AccountRegisterFragment extends Fragment {
 
     private SupabaseService supabaseService;
     private SharedPrefHelper prefs;
+
+    public AccountRegisterFragment() {
+        super(R.layout.fragment_account_register);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -96,7 +101,6 @@ public class AccountRegisterFragment extends Fragment {
         }
         hideError();
         showProgress(true);
-
     }
 
     private void showProgress(boolean show) {
@@ -124,11 +128,5 @@ public class AccountRegisterFragment extends Fragment {
     private void navigateToPinEntry() {
         NavHostFragment.findNavController(AccountRegisterFragment.this)
                 .navigate(R.id.action_reg_to_pin);
-    }
-
-    private void runOnUi(Runnable block) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(block);
-        }
     }
 }

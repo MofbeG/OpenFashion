@@ -9,15 +9,6 @@
     android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
     android:paddingVertical="@dimen/paddingVerticalMainLayout">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo_open_fashion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -26,8 +17,8 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2">
+        android:layout_marginTop="@dimen/margin_header"
+        app:layout_constraintTop_toTopOf="@+id/authRoot">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -162,27 +153,26 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:text="@string/or"
         android:textAppearance="@style/TextAppearance.OpenFashion.SubTitle2"
+        app:layout_constraintBottom_toTopOf="@+id/signInEmailButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signInButton" />
 
     <!-- Вход по коду -->
     <com.google.android.material.button.MaterialButton
-        style="@style/Widget.OpenFashion.TransparentButton"
-        android:layout_marginBottom="30dp"
         android:id="@+id/signInEmailButton"
+        style="@style/Widget.OpenFashion.TransparentButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:text="@string/Sign_in_by_mail"
         app:icon="@drawable/mail_send"
         app:iconTint="@color/TitleActive"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Ссылка “Забыли пароль?” -->
     <com.google.android.material.textview.MaterialTextView

@@ -150,9 +150,11 @@
         tools:layout="@layout/fragment_pin_entry">
         <action
             android:id="@+id/action_pin_to_auth"
+            app:popUpToInclusive="true"
             app:destination="@id/authFragment" />
         <action
             android:id="@+id/action_pin_to_home"
+            app:popUpToInclusive="true"
             app:destination="@id/homeFragment" />
     </fragment>
 
@@ -168,6 +170,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            app:destination="@id/authFragment"
+            android:id="@+id/action_home_to_auth"/>
+        <action
+            app:destination="@id/productsListFragment"
+            android:id="@+id/action_home_to_productlist"/>
     </fragment>
 
     <fragment
@@ -182,6 +190,55 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left"/>
+        <action
+            android:id="@+id/action_product_to_basked"
+            app:destination="@id/orderFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/productsListFragment"
+        android:name="com.sigma.openfashion.ui.product.ProductListFragment"
+        android:label="Products List"
+        tools:layout="@layout/fragment_productlist">
+
+        <action
+            android:id="@+id/action_productlist_to_product"
+            app:destination="@id/productFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.sigma.openfashion.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+
+        <action
+            android:id="@+id/action_profile_to_auth"
+            app:popUpToInclusive="true"
+            app:destination="@id/authFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/orderFragment"
+        android:name="com.sigma.openfashion.ui.order.OrderFragment"
+        android:label="Order"
+        tools:layout="@layout/fragment_order">
+        <action
+            android:id="@+id/action_order_to_product"
+            app:destination="@id/productFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
     </fragment>
 
 </navigation>

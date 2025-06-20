@@ -5,15 +5,23 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +36,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.navigation.NavigationView;
 import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
@@ -36,6 +45,8 @@ import com.sigma.openfashion.data.product.Gender;
 import com.sigma.openfashion.data.product.Product;
 import com.sigma.openfashion.data.product.ProductsAdapter;
 import com.sigma.openfashion.data.product.ProductsRepository;
+import com.sigma.openfashion.ui.BaseFragment;
+import com.sigma.openfashion.ui.HeaderConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,11 +58,12 @@ import java.util.List;
 import eightbitlab.com.blurview.BlurView;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
     private ConstraintLayout constaintLayoutBanner;
     private FlexboxLayout flexboxProducts;
     private ProductsRepository productsRepository;
+    private Button buttonShowAll;
     private List<ProductEntity> productEntityList = new ArrayList<>();
 
     private SupabaseService supabaseService;
@@ -60,6 +72,7 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
         super(R.layout.fragment_home);
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -72,24 +85,16 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BlurView blurView     = view.findViewById(R.id.blurView);
         ImageView imageView   = view.findViewById(R.id.imageViewBanner);
         constaintLayoutBanner = view.findViewById(R.id.constaintLayoutBanner);
         flexboxProducts       = view.findViewById(R.id.flexboxProducts);
+        buttonShowAll         = view.findViewById(R.id.buttonShowAll);
 
-        ViewGroup rootView        = (ViewGroup) requireActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        Drawable windowBackground = requireActivity().getWindow().getDecorView().getBackground();
         supabaseService           = new SupabaseService();
         prefs                     = SharedPrefHelper.getInstance(requireContext());
 
         supabaseService.setJwtToken(prefs.getJwtToken());
         productsRepository = new ProductsRepository(requireContext(), supabaseService);
-
-        blurView.setupWith(rootView)
-                .setFrameClearDrawable(windowBackground)
-                .setBlurEnabled(true)
-                .setBlurAutoUpdate(true)
-                .setBlurRadius(20f);
 
         Glide.with(this)
                 .asBitmap()
@@ -106,15 +111,24 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
+        buttonShowAll.setOnClickListener(view1 -> {
+            NavHostFragment.findNavController(this)
+                    .navigate(R.id.action_home_to_productlist);
+        });
+
         loadProductsWithCache();
     }
-    /**
-     * Получаем список сначала из локального кэша (Room), затем (независимо) из сети,
-     * и обновляем UI по каждому «пакету» данных.
-     */
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHeaderVisibility(true);
+        setupHeader(HeaderConfig.BUTTON_MENU | HeaderConfig.BUTTON_SEARCH | HeaderConfig.BUTTON_ORDER);
+    }
+
     private void loadProductsWithCache() {
         // Запрашиваем из репозитория (он вернёт сначала локальные, потом сетевые)
-        productsRepository.getProducts(-1, 4, 0, new ProductsRepository.LoadCallback() {
+        productsRepository.getProducts(-1, null, 4, 0, new ProductsRepository.LoadCallback() {
             @Override
             public void onLoaded(List<ProductEntity> products) {
                 // В этом колбэке могут прийти:
@@ -138,10 +152,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /**
-     * Заполняем FlexboxLayout товарами
-     * (раньше у вас это был List<Product>, теперь — List<ProductEntity>).
-     */
     private void loadProductsPreviewFromEntities(List<ProductEntity> products) {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
 
@@ -185,11 +195,5 @@ public class HomeFragment extends Fragment {
         runOnUi(() ->
                 Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
         );
-    }
-
-    private void runOnUi(Runnable block) {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(block);
-        }
     }
 }

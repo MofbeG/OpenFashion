@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- 📜 Прокручиваемое содержимое -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
+        android:paddingVertical="@dimen/paddingVerticalMainLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout
+            android:paddingTop="@dimen/margin_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constaintLayoutBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    style="@style/TextAppearance.OpenFashion.Body.Medium"
+                    android:id="@+id/textViewProductsCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4500 Apparel"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/buttonShowFilter"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/toggle_button_background_fill"
+                    android:backgroundTint="@color/Input_Background"
+                    android:src="@drawable/filter"
+                    android:layout_marginEnd="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexboxProducts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                app:flexWrap="wrap"
+                app:alignItems="center"
+                app:justifyContent="center"/>
+
+            <TextView
+                android:id="@+id/textViewCountPages"
+                style="@style/TextAppearance.OpenFashion.Body.Small"
+                android:text="0 из 20"
+                android:layout_gravity="center"
+                android:layout_marginVertical="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/paginationContainer"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/buttonBackPage"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/forward"
+                    android:rotation="180"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
+
+                <ImageButton
+                    android:id="@+id/buttonNextPage"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/forward"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/blurViewFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:paddingTop="@dimen/margin_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="#E7FFFFFF"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonFullClose"
+                style="@style/Widget.OpenFashion.TransparentButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                app:icon="@drawable/close"
+                app:iconGravity="textStart"
+                android:gravity="end"
+                app:strokeColor="@android:color/transparent"
+                app:iconSize="32dp"
+                app:iconTint="@color/TitleActive"
+                android:layout_marginTop="26dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_marginTop="8dp"
+                style="@style/TextAppearance.OpenFashion.Body.Large"
+                android:text="Гендер"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RadioGroup
+                android:layout_marginTop="8dp"
+                android:id="@+id/radioGroupGender"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </RadioGroup>
+
+            <TextView
+                android:layout_marginTop="8dp"
+                style="@style/TextAppearance.OpenFashion.Body.Large"
+                android:text="Категории"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroupCategories"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+            </RadioGroup>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonApply"
+                android:layout_marginTop="10dp"
+                android:text="Применить"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </eightbitlab.com.blurview.BlurView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

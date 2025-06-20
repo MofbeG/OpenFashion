@@ -73,4 +73,24 @@
     <string name="have_an_account">У вас есть аккаунт?</string>
     <string name="or">Или</string>
     <string name="Start">Начать</string>
+    <string name="show_all">Показать все</string>
+    <string name="new_arrival">Новое поступление</string>
+    <string name="man">мужская</string>
+    <string name="female">женская</string>
+    <string name="unisex">унисекс</string>
+    <string name="profile">Профиль</string>
+    <string name="settings">Настройки</string>
+    <string name="View_all">Посмотреть все</string>
+    <string name="clothes">Одежда</string>
+    <string name="order">Заказ</string>
+    <string name="basket">Корзина</string>
+    <string name="apply">применить</string>
+    <string name="sucress">Успех</string>
+    <string name="Apparel">Предметов одежды</string>
+    <string name="Checkout">оформление заказа</string>
+    <string name="add_to_basket">Добавить в корзину</string>
+    <string name="remove_basket">Убрать с корзины</string>
+    <string name="Loading">Загрузка</string>
+    <string name="Your_shopping_cart_is_empty">Ваша корзина пуста</string>
+    <string name="est_total">Итоговая сумма</string>
 </resources>
