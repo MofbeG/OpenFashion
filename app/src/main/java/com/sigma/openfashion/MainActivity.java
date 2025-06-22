@@ -5,12 +5,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -20,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.sigma.openfashion.data.product.Gender;
 
 import eightbitlab.com.blurview.BlurView;
@@ -65,6 +66,36 @@ public class MainActivity extends AppCompatActivity {
         ImageButton orderButton = findViewById(R.id.buttonOrder);
         orderButton.setOnClickListener(view -> {
             navController.navigate(R.id.orderFragment);
+        });
+
+        ImageButton searchButton = findViewById(R.id.buttonSearch);
+        searchButton.setOnClickListener(view -> {
+            ConstraintLayout mainTitle = findViewById(R.id.mainTitle);
+            mainTitle.setVisibility(View.GONE);
+            ConstraintLayout serchTitle = findViewById(R.id.serchTitle);
+            serchTitle.setVisibility(View.VISIBLE);
+        });
+
+        ImageButton buttonSearchingCancel = findViewById(R.id.buttonsc);
+        buttonSearchingCancel.setOnClickListener(view -> {
+            ConstraintLayout mainTitle = findViewById(R.id.mainTitle);
+            mainTitle.setVisibility(View.VISIBLE);
+            ConstraintLayout serchTitle = findViewById(R.id.serchTitle);
+            serchTitle.setVisibility(View.GONE);
+        });
+
+        ImageButton buttonSearching = findViewById(R.id.buttonSearching);
+        buttonSearching.setOnClickListener(view -> {
+            TextInputEditText inputSearchEditText = findViewById(R.id.inputSearchEditText);
+            ConstraintLayout mainTitle = findViewById(R.id.mainTitle);
+            mainTitle.setVisibility(View.VISIBLE);
+            ConstraintLayout serchTitle = findViewById(R.id.serchTitle);
+            serchTitle.setVisibility(View.GONE);
+
+            Bundle args = new Bundle();
+            args.putString("name", inputSearchEditText.getText().toString().trim());
+            inputSearchEditText.setText("");
+            navController.navigate(R.id.productsListFragment, args);
         });
 
         setupHeaderButtons();

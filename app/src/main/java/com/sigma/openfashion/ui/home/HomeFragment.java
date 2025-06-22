@@ -98,7 +98,7 @@ public class HomeFragment extends BaseFragment {
 
         Glide.with(this)
                 .asBitmap()
-                .load("https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/images//image%2010.png")
+                .load("https://hufhfmqquczxpxpmtzbf.supabase.co/storage/v1/object/public/images//Banner%20(1).png")
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {

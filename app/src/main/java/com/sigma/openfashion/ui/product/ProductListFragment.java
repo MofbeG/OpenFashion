@@ -1,10 +1,7 @@
 package com.sigma.openfashion.ui.product;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,19 +18,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+
 import android.widget.Button;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.button.MaterialButton;
 import com.sigma.openfashion.R;
 import com.sigma.openfashion.SharedPrefHelper;
 import com.sigma.openfashion.data.SupabaseService;
-import com.sigma.openfashion.data.image.ImageAdapter;
 import com.sigma.openfashion.data.local.ProductEntity;
 import com.sigma.openfashion.data.product.Gender;
 import com.sigma.openfashion.data.product.ProductsRepository;
@@ -45,7 +39,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import eightbitlab.com.blurview.BlurView;
@@ -71,6 +64,7 @@ public class ProductListFragment extends BaseFragment {
     private LinearLayout paginationContainer;
 
     private Gender genderFilter = null;
+    private String name;
     private int categoryFilter = -1;
 
     public ProductListFragment() {
@@ -113,6 +107,7 @@ public class ProductListFragment extends BaseFragment {
             String genderStr = args.getString("gender", null);
             genderFilter = genderStr == null ? null : Gender.valueOf(genderStr);
             categoryFilter = args.getInt("categoryFilter", -1);
+            name = args.getString("name", null);
         }
 
         blurViewFilter.setupWith(rootView)
@@ -232,6 +227,7 @@ public class ProductListFragment extends BaseFragment {
         productsRepository.getProductsWithCount(
                 categoryFilter,
                 genderFilter,
+                name,
                 itemsPerPage,
                 offset,
                 new ProductsRepository.LoadCallbackWithCount() {

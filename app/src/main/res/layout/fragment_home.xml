@@ -13,8 +13,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingHorizontal="@dimen/paddingHorizontalMainLayout"
-        android:paddingVertical="@dimen/paddingVerticalMainLayout"
+        android:paddingTop="@dimen/paddingVerticalMainLayout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -228,6 +227,7 @@
                     android:drawableEnd="@drawable/forward_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="40dp"
                     style="@style/Widget.OpenFashion.TransparentButton"
                     android:text="@string/show_all"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -239,47 +239,145 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constaintLayoutBrand"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="140dp"
                 android:layout_marginTop="25dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constaintLayoutNewArrival">
 
+                <ImageView
+                    android:id="@+id/imageView333"
+                    android:layout_width="142dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/s"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TableLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView33"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView333"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+                    <TableRow android:gravity="center">
+                        <ImageView android:src="@drawable/prada"
+                            android:padding="4dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"/>
+                        <ImageView android:src="@drawable/burberry"
+                            android:padding="4dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"/>
+                        <ImageView android:src="@drawable/boss"/>
+                    </TableRow>
+                    <TableRow android:gravity="center" android:layout_marginTop="15dp">
+                        <ImageView android:src="@drawable/catier"
+                            android:padding="4dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"/>
+                        <ImageView android:src="@drawable/gucci"
+                            android:padding="4dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"/>
+                        <ImageView android:src="@drawable/tiffany___co"/>
+                    </TableRow>
+                </TableLayout>
+
+
+                <ImageView
+                    android:id="@+id/imageView33"
+                    android:layout_width="142dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/s"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constaintLayoutCollections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="85dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constaintLayoutNewArrival">
+
+
+                <TextView
+                    android:id="@+id/textViewCollections"
+                    style="@style/TextAppearance.OpenFashion.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Collections"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/frame21"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewCollections" />
+
+                <ImageView
+                    android:paddingHorizontal="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/image9"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
-                android:layout_marginTop="16dp"
-                android:src="@drawable/brand"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <ImageView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/collection" />
+                android:src="@drawable/video"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
 
             <ImageView
-                android:layout_marginTop="26dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/trending"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/navamsid"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
 
             <ImageView
-                android:layout_marginTop="26dp"
-                android:src="@drawable/openfashion"
-                android:layout_width="match_parent"
-                android:layout_height="560dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/folowus"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
 
             <ImageView
-                android:layout_marginTop="26dp"
-                android:src="@drawable/followus"
-                android:layout_width="match_parent"
-                android:layout_height="560dp"/>
-            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
                 android:src="@drawable/footer"
-                android:layout_width="match_parent"
-                android:layout_height="560dp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
 
         </LinearLayout>
     </ScrollView>

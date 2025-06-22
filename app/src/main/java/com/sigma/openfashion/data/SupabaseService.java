@@ -19,6 +19,7 @@ import java.util.Locale;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -415,6 +416,8 @@ public class SupabaseService {
             urlBuilder.append("&offset=").append(offset);
         }
 
+        urlBuilder.append("&order=created_at.desc");
+
         String url = urlBuilder.toString();
 
         Request request = new Request.Builder()
@@ -430,6 +433,7 @@ public class SupabaseService {
     public void getProductsPreviewWithCount(
             Integer categoryId,
             Gender gender,
+            String searchQuery,
             Integer limit,
             Integer offset,
             QueryCallbackWithCount callback
@@ -443,6 +447,10 @@ public class SupabaseService {
 
         if (gender != null) {
             urlBuilder.append("&gender=eq.").append(gender.name().toLowerCase());
+        }
+
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            urlBuilder.append("&name=ilike.*").append(searchQuery).append("*");
         }
 
         if (limit != null) {
@@ -521,6 +529,21 @@ public class SupabaseService {
         client.newCall(request).enqueue(openCallback(callback));
     }
 
+    /** Получить товары по названию (поиск) */
+    public void searchProductsByName(String name, QueryCallback callback) {
+        String url = String.format(Locale.US,
+                SUPABASE_URL + "/rest/v1/products?name=ilike.*%s*&select=id,name,price,currency,preview_image_url",
+                name);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .headers(getCommonHeaders())
+                .build();
+        logRequest(request);
+        client.newCall(request).enqueue(openCallback(callback));
+    }
+
     /** Получить изображения по товар ID. */
     public void getProductImages(int productId, QueryCallback callback) {
         String url = String.format(Locale.US,
@@ -538,8 +561,11 @@ public class SupabaseService {
 
     /** Получить все элементы корзины для пользователя. */
     public void getCartItems(String userId, QueryCallback callback) {
-        String url = String.format(Locale.US,
-                SUPABASE_URL + "/rest/v1/cart_items?user_id=eq.%s&select=*,product:products(id,name,price,currency,preview_image_url)", userId);
+        HttpUrl url = HttpUrl.parse(SUPABASE_URL + "/rest/v1/cart_items").newBuilder()
+                .addQueryParameter("user_id", "eq." + userId)
+                .addQueryParameter("select", "id,quantity,added_at,selected_size,selected_color,product:products(id,name,price,currency,preview_image_url)")
+                .addQueryParameter("order", "added_at.desc")  // Используем правильное имя поля
+                .build();
 
         Request request = new Request.Builder()
                 .url(url)

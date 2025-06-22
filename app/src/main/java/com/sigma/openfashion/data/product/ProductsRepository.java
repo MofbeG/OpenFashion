@@ -40,23 +40,35 @@ public class ProductsRepository {
     public void getProductsWithCount(
             final int categoryId,
             final Gender gender,
+            final String searchQuery,
             final int limit,
             final int offset,
             final LoadCallbackWithCount callback
     ) {
         new Thread(() -> {
-            List<ProductEntity> cached = productDao.getProductsPreview(limit, offset);
+            String genderStr = gender != null ? gender.name().toLowerCase() : null;
+
+            int effectiveCategoryId = categoryId >= 0 ? categoryId : -1;
+
+            List<ProductEntity> cached = productDao.searchProducts(
+                    effectiveCategoryId,
+                    genderStr,
+                    searchQuery,
+                    limit,
+                    offset
+            );
             if (cached != null && !cached.isEmpty()) {
                 callback.onLoaded(cached, 0); // 0 - временное значение
             }
 
-            fetchFromNetworkWithCount(categoryId, gender, limit, offset, callback);
+            fetchFromNetworkWithCount(categoryId, gender, searchQuery, limit, offset, callback);
         }).start();
     }
 
     private void fetchFromNetworkWithCount(
             int categoryId,
             Gender gender,
+            String searchQuery,
             int limit,
             int offset,
             LoadCallbackWithCount callback
@@ -64,6 +76,7 @@ public class ProductsRepository {
         supabaseService.getProductsPreviewWithCount(
                 categoryId,
                 gender,
+                searchQuery,
                 limit,
                 offset,
                 new SupabaseService.QueryCallbackWithCount() {

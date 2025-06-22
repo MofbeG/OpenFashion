@@ -13,6 +13,18 @@ public interface ProductDao {
 
     @Query("SELECT * FROM products ORDER BY id LIMIT :limit OFFSET :offset")
     List<ProductEntity> getProductsPreview(int limit, int offset);
+    @Query("SELECT * FROM products WHERE " +
+            "(:categoryId = -1 OR categoryId = :categoryId) AND " +
+            "(:gender IS NULL OR gender = :gender) AND " +
+            "(:query IS NULL OR name LIKE '%' || :query || '%') " +
+            "ORDER BY id LIMIT :limit OFFSET :offset")
+    List<ProductEntity> searchProducts(
+            int categoryId,
+            String gender,
+            String query,
+            int limit,
+            int offset
+    );
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<ProductEntity> products);
